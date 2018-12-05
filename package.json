@@ -1,0 +1,44 @@
+{
+  "name": "yoyow-middleware",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">= 6.9.2"
+  },
+  "private": true,
+  "scripts": {
+    "start": "cross-env PORT=3001 babel-node ./bin/www",
+    "debug": "cross-env PORT=3001 nodemon ./bin/www --exec babel-node",
+    "doc": "esdoc -c esdoc.json",
+    "test": "cross-env mocha -t 10000 --require babel-core/register",
+    "test:api": "cross-env mocha -t 100000 --require babel-core/register ./test/api.test",
+    "test:auth": "cross-env mocha -t 10000 --require babel-core/register ./test/auth.test"
+  },
+  "dependencies": {
+    "body-parser": "~1.18.2",
+    "cookie-parser": "~1.4.3",
+    "crypto-js": "^3.1.9-1",
+    "debug": "~2.6.9",
+    "express": "~4.15.5",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.0",
+    "qr-image": "^3.2.0",
+    "serve-favicon": "~2.4.5",
+    "yoyowjs-lib": "git+https://github.com/yoyow-org/yoyowjs-lib.git"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "babel-cli": "^6.24.1",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "bytebuffer": "^5.0.1",
+    "cross-env": "^5.1.3",
+    "esdoc": "^1.0.4",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "mocha": "^4.1.0",
+    "nodemon": "^1.11.0",
+    "secure-random": "^1.1.1",
+    "ws": "^4.0.0"
+  }
+}
