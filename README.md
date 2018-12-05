@@ -7,7 +7,7 @@
 
 配置文件的路径在代码路径下`conf/config.js` 文件中，如果使用docker的方式启动，可以将配置文件映射到容器中`/app/conf`路径下
 
-```json
+```javascript
 {
     // api服务器地址，测试网公共api地址如下，正式网部署请更改该地址
     apiServer: "ws://47.52.155.181:10011",
@@ -147,7 +147,7 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
 `localhost:3000/api/v1/getHistory?uid=25638&start=1220&limit=30&op_type=0`
 
   返回结果：
-```json
+```
     {
       code: 操作结果,
       message: 返回消息,
@@ -168,7 +168,7 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
     localhost:3000/api/v1/confirmBlock?block_num=4303231
 
   返回结果：
-```json
+```
     {
       code: 操作结果,
       message: 返回消息,
@@ -276,7 +276,7 @@ http://localhost:3001/api/v1/getPlatformById?uid=217895094
 
   请求参数：
 
-```json
+```
  {Object} cipher - 请求的密文对象，格式如下
 {
   ct, - 密文文本 16进制
@@ -286,7 +286,7 @@ http://localhost:3001/api/v1/getPlatformById?uid=217895094
 ```
 
 请求对象结构:
-```json
+```
 {Number} uid - 指定用户id
 {Number} amount - 转出金额
 {Number} asset_id - 资产id 
@@ -301,7 +301,7 @@ localhost:3000/api/v1/transfer
 
  返回结果：
 
-```json
+```
 {
   code: 操作结果,
   message: 返回消息,
@@ -371,6 +371,9 @@ http://localhost:3001/api/v1/getQRReceive?amount=98&memo=新的转账&asset_id=0
 ```
 
   请求示例：参照 安全请求验证
+```
+localhost:3000/api/v1/updateAllowedAssets
+```
 
   返回结果：
 
@@ -420,8 +423,6 @@ http://localhost:3001/api/v1/getQRReceive?amount=98&memo=新的转账&asset_id=0
 ```
 localhost:3000/api/v1/post
 ```
-
-
 
   返回结果：
 
@@ -500,7 +501,7 @@ localhost:3000/api/v1/postUpdate
 
   返回结果：
 
-```json
+```
 {
   code: 操作结果,
   message: 返回消息,
@@ -541,7 +542,7 @@ localhost:3000/api/v1/postUpdate
 
   返回结果：
 
-```json
+```
 {
   code: 操作结果,
   message: 返回消息,
@@ -564,7 +565,7 @@ localhost:3000/api/v1/postUpdate
 
   返回结果：
 
-```json
+```
 {
   code: 操作结果,
   message: 返回消息,
@@ -641,7 +642,7 @@ localhost:3000/api/v1/postUpdate
 
 App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接口 ，发送回用户签名对象
 
-```json
+```
 {
   {Number} yoyow - 当前操作用户账号id
   {String} time - 签名时间戳字符串
@@ -651,7 +652,7 @@ App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接
 ```
 
 约定 平台提供的接口必须返回以下信息
-```json
+```
 {
   {Number} code - 操作结果 0 为通过 任何非 0 情况视为错误处理
   {String} message - 操作结果描述
