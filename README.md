@@ -2,6 +2,8 @@
 
 使用YOYOW 中间件是平台接入最简单的方式。主要提供三方面的接口： 账号授权，平台激励和内容上链。 可以采用 Docker 一键部署，获得相应的 API，方便的与 YOYOW 链进行交互。
 
+平台的创建操作步骤请参考：[从0开始创建YOYOW平台账户](https://wiki.yoyow.org/zh/latest/others/create_platform.html)
+
 ## 部署启动
 ### 配置文件说明
 
@@ -624,7 +626,7 @@ localhost:3000/api/v1/postUpdate
 }
 ```
 
-##### 平台拓展信息协议说明
+##### 4.4 平台拓展信息协议说明
 
 平台属性 extra_data 拓展信息 JSON对象格式字符串 中
 ```javascript
@@ -638,7 +640,7 @@ localhost:3000/api/v1/postUpdate
 }
 ```
 
-##### 4.4 平台扫码登录
+##### 4.5 平台扫码登录
 
 App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接口 ，发送回用户签名对象
 
