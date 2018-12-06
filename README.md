@@ -2,6 +2,9 @@
 
 使用YOYOW 中间件是平台接入最简单的方式。主要提供三方面的接口： 账号授权，平台激励和内容上链。 可以采用 Docker 一键部署，获得相应的 API，方便的与 YOYOW 链进行交互。
 
+YOYOW中间件是通过YOYOW node 的API接口与YOYOW网络通讯，为平台服务商提供方便的访问链上数据的接口，保证传统业务代码能在只做尽量少的改动情况下，也能达到上链的需求。具体示意图如下：
+![YOYOW 中间件作用示意图](https://github.com/yoyow-org/yoyow-middleware/blob/master/public/images/architecture.png)
+
 平台的创建操作步骤请参考：[从0开始创建YOYOW平台账户](https://wiki.yoyow.org/zh/latest/others/create_platform.html)
 
 ## 部署启动
@@ -69,7 +72,7 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
   `npm start`
 
 启动正常情况如下图
-![启动正常情况如图](https://github.com/yoyow-org/yoyow-node-sdk/blob/master/middleware/public/images/step4.png)
+![启动正常情况如图](https://github.com/yoyow-org/yoyow-middleware/blob/master/public/images/step4.png)
 
 ## 接口说明
 
@@ -661,7 +664,7 @@ App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接
 }
 ```
 ### 请求返回 error code 状态说明
-
+```
 1001 无效的签名类型
 
 1002 无效的签名时间
@@ -691,7 +694,7 @@ App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接
 2006 无效的资产符号或id
 
 3001 文章ID必须为该平台该发文人的上一篇文章ID +1（平台管理发文id）
-
+```
 
 ### 安全请求验证
 
