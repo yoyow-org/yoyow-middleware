@@ -57,8 +57,8 @@ router.get('/confirmBlock', (req, res, next) => {
 });
 
 router.post('/post', Secure.validQueue, (req, res, next) => {
-    let {platform, poster, post_pid, title, body, extra_data, origin_platform, origin_poster, origin_post_pid} = req.decryptedData;
-    Api.post(platform, poster, post_pid, title, body, extra_data, origin_platform, origin_poster, origin_post_pid).then( tx => {
+    let {platform, poster, post_pid, title, body, extra_data, hash_value, origin_platform, origin_poster, origin_post_pid} = req.decryptedData;
+    Api.post(platform, poster, post_pid, title, body, extra_data, hash_value, origin_platform, origin_poster, origin_post_pid).then( tx => {
         utils.success(res, tx);
     }).catch(e => {
         utils.error(res, e);
