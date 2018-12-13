@@ -389,9 +389,10 @@ When startup normally and successfully, you'll see:
     {String} title        - title of this post
     {String} body         - content of this post
     {String} extra_data   - extra info of this post
-    {String} origin_platform - origin platform of post(defaults to null)
-    {String} origin_poster   - origin poster of post(defaults to null)
-    {String} origin_post_pid - origin post id(defaults to null)
+    {String} hash_value   - hash value, if not defined, it will be the sha256 value of the body content
+    {Number} origin_platform - origin platform of post(defaults to null)
+    {Number} origin_poster   - origin poster of post(defaults to null)
+    {Number} origin_post_pid - origin post id(defaults to null)
     {Number} time         - operation time
 
   example: see chapter `Verification of request`
@@ -473,7 +474,7 @@ type: POST
         "hash_value":"bb76a28981710f513479fa0d11fee154795943146f364da699836fb1f375875f", - hash value of the content
         "extra_data":"{}", - extra information of post
         "title":"test title in js for update", - title of this post
-        "body":"test boyd in js for update",   - content of this post
+        "body":"test body in js for update",   - content of this post
         "create_time":"2018-03-12T10:22:03",   - created at
         "last_update_time":"2018-03-12T10:23:24", - last updated at
         "origin_platform", - origin platform where the post firstly came to people(only used when reposting an existing post)
