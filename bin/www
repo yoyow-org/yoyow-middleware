@@ -4,12 +4,12 @@
  * Module dependencies.
  */
 import { ChainStore } from "yoyowjs-lib";
-import { Apis } from "yoyowjs-ws";
+
+const Api  = require('../lib/Api');
 
 var app = require('../app');
 var debug = require('debug')('yoyow-middleware:server');
 var http = require('http');
-var config = require("../conf/config");
 /**
  * Get port from environment and store in Express.
  */
@@ -18,36 +18,28 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 let server = null;
+(async() => {
+  try {
+    /**
+     * Create API
+     */
+    await Api.init();
+    /**
+     * Create HTTP server.
+     */
+    server = http.createServer(app);
 
-/**
- * Create API
- */
-Apis.setRpcConnectionStatusCallback((msg) => {
-    //open,error,closed
-    console.log('Api status:', msg);
-    if (msg === "closed") {
-        Apis.reset(config.apiServer);
-    }
-});
-Apis.instance(config.apiServer, true).init_promise.then((result) => {
-    console.log('Api connected......');
-    ChainStore.init().then(()=>{
-        /**
-         * Create HTTP server.
-         */
-        server = http.createServer(app);
-
-        /**
-         * Listen on provided port, on all network interfaces.
-         */
-        server.listen(port);
-        server.on('error', onError);
-        server.on('listening', onListening);
-        console.log('HTTP opened port:', port);
-    });
-}).catch(err => {
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+    console.log('HTTP opened port:', port);
+  } catch(err) {
     console.log("Api init error:", err);
-});
+  }
+})();
 
 /**
  * Normalize a port into a number, string, or false.

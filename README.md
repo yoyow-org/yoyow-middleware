@@ -8,6 +8,7 @@ YOYOW中间件是通过YOYOW node 的API接口与YOYOW网络通讯，为平台�
 平台的创建操作步骤请参考：[从0开始创建YOYOW平台账户](https://wiki.yoyow.org/zh/latest/others/create_platform.html)
 
 ## 部署启动
+
 ### 配置文件说明
 
 配置文件的路径在代码路径下`conf/config.js` 文件中，如果使用docker的方式启动，可以将配置文件映射到容器中`/app/conf`路径下
@@ -16,34 +17,34 @@ YOYOW中间件是通过YOYOW node 的API接口与YOYOW网络通讯，为平台�
 {
     // api服务器地址，测试网公共api地址如下，正式网部署请更改该地址
     apiServer: "ws://47.52.155.181:10011",
-    
+
     // 安全请求有效时间，单位s，如果请求的内容超过有效期，会返回 1003 请求已过期
     secure_ageing: 60,
-    
+
     // 平台安全请求验证key 可以自行定义，具体使用见《安全访问》
     secure_key: "",
-    
-    // 平台所有者资金私钥 
+
+    // 平台所有者资金私钥
     active_key: "",
-    
+
     // 平台所有者零钱私钥
-    secondary_key: "", 
-    
+    secondary_key: "",
+
     // 平台所有者备注私钥
     memo_key: "",
-    
+
     // 平台id(yoyow id)
     platform_id: "",
-    
+
     // 操作手续费是否使用积分
     use_csaf: true,
-    
+
     // 转账是否转到余额 否则转到零钱
     to_balance: false,
-    
+
     // 钱包授权页URL，测试网地址如下，正式网地址“https://wallet.yoyow.org/#/authorize-service”
     wallet_url: "http://demo.yoyow.org:8000/#/authorize-service",
-    
+
     // 允许接入的IP列表，强制指定明确的来访IP地址，暂不支持"*" 或 "0.0.0.0"
     allow_ip: ["localhost", "127.0.0.1"]
 }
@@ -61,43 +62,49 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
 ```
 
 ### 手动部署
+
 1. clone 源码
-  `git clone git@github.com:yoyow-org/yoyow-node-sdk.git`
+    `git clone git@github.com:yoyow-org/yoyow-node-sdk.git`
 2. 修改中间件配置 
-  参照配置文件说明()，修改文件`yoyow-node-sdk/middleware/conf/config.js`
+    参照配置文件说明()，修改文件`yoyow-node-sdk/middleware/conf/config.js`
 3. 安装中间件服务所需node库
-  进入 `~/yoyow-node-sdk/middleware/` 目录
-  `npm install`
+    进入 `~/yoyow-node-sdk/middleware/` 目录
+    `npm install`
 4. 启动中间件服务
-  `npm start`
+    `npm start`
 
 启动正常情况如下图
 ![启动正常情况如图](https://github.com/yoyow-org/yoyow-middleware/blob/master/public/images/step4.png)
 
-## 接口说明
+## V2 接口说明
 
 ### 请求文档及示例
 
-#### 1. 基础查询相关接口
+#### 1. 基础查询接口
 
-##### 1.1. 获取指定账户信息 getAccount
+##### 1.1. 获取指定账户信息 /accounts
 
   请求类型：GET
 
+  请求路径：/accounts/:uid
+  
+    {Number} uid - 账号id
+
   请求参数：
 
-    {Number} uid - 账号id
+    无
 
   请求示例：
 
-    localhost:3000/api/v1/getAccount?uid=25638
+    localhost:3000/api/v2//accounts/30833
 
   返回结果：
 
     {
-      code: 作结果,
+      code: 操作结果,
       message: 返回消息,
       data: { // 用户信息
+        id: 账号Object Id
         uid: 账号uid
         name: 账号名称
         owner: 主控权限
@@ -136,20 +143,23 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
       }
     }
 
-##### 1.2. 获取指定账户近期活动记录 getHistory
+##### 1.2. 获取指定账户近期活动记录 /accounts/:uid/histories
 
   请求类型：GET
 
-  请求参数：
+  请求路径：/accounts/:uid/histories
 
     {Number} uid - 账号id
+
+  请求参数：
+    
     {Number} op_type - 查询op类型 '0' 为 转账op，默认为null 即查询所有OP类型
     {Number} start 查询开始编号，为0时则从最新记录开始查询，默认为0
     {Number} limit - 查询长度，最大不可超过100条，默认为10
 
   请求示例：
 
-`localhost:3000/api/v1/getHistory?uid=25638&start=1220&limit=30&op_type=0`
+  `localhost:3000/api/v2/accounts/30833/histories?start=0&limit=2&op_type=0`
 
   返回结果：
 ```
@@ -160,30 +170,46 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
     }
 ```
 
-##### 1.3. 验证块是否不可退回 confirmBlock
+##### 1.3. 查询账户授予平台的权限
 
   请求类型：GET
 
+  请求路径：/authPermissions
+
   请求参数：
 
-    {Number} block_num - 验证的块号
+    {Number} platform - 平台账户
+    {Number} account - 起始查询账户
 
   请求示例：
 
-    localhost:3000/api/v1/confirmBlock?block_num=4303231
+    localhost:3000/api/v2/authPermissions?platform=33313&account=31479
 
   返回结果：
+
 ```
     {
       code: 操作结果,
       message: 返回消息,
-      data: 此块是否不可退回 
+      data: [
+        {
+            "id": "2.22.0", 
+            "account": 30833, 账号id
+            "platform": 33313, 平台id
+            "max_limit": 1000000000, 授予平台可使用的最大零钱额度
+            "cur_used": 0,  当前已使用零钱数额
+            "is_active": true,  授权状态，false 则为该授权无效
+            "permission_flags": 255  详细授权权限
+        }
+    ]
     }
 ```
 
-##### 1.4. 获取指定资产信息 getAsset
+##### 1.4. 获取指定资产信息
 
   请求类型：GET
+
+  请求路径：/assets/YOYO
 
   请求参数：
 
@@ -194,7 +220,7 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
   请求示例：
 
 ```
-http://localhost:3001/api/v1/getAsset?search=YOYOW
+http://localhost:3001/api/v2/assets/YOYO
 ```
 
   返回结果：
@@ -235,17 +261,20 @@ http://localhost:3001/api/v1/getAsset?search=YOYOW
 
 ```
 
-##### 1.5. 获取指定平台信息 getPlatformById
+##### 1.5. 获取块详细信息
 
   请求类型：GET
 
+  请求路径：/blocks/:block_num
+
   请求参数：
-​	{Number} uid - 平台所有者账号uid
+
+​ {Number} block_num - 块高度（块号）
 
   请求示例：
 
 ```
-http://localhost:3001/api/v1/getPlatformById?uid=217895094
+http://localhost:3001/api/v2/blocks/100
 
 ```
 
@@ -253,31 +282,357 @@ http://localhost:3001/api/v1/getPlatformById?uid=217895094
 
 ```
 {
-  "id": "1.6.0", - 平台 object id
-  "owner": 217895094, - 平台所有者账号uid
-  "name": "test-yoyow", - 平台名称
-  "sequence": 1,
-  "is_valid": true, - 是否有效
-  "total_votes": 0, - 平台总票数
-  "url": "http://demo.yoyow.org/", - 平台url地址
-  "pledge": 1000000000, - 平台抵押（YOYO）
-  "pledge_last_update": "2018-02-10T01:03:57", - 平台抵押最后更新时间
-  "average_pledge": 176601774, - 平台平均抵押
-  "average_pledge_last_update": "2018-02-11T06:49:12", - 平台平均抵押最后更新时间
-  "average_pledge_next_update_block": 4562164, - 平台平均抵押下次更新块号
-  "extra_data": "{}", - 平台拓展信息 
-  "create_time": "2018-02-10T01:03:57", - 平台创建日期
-  "last_update_time": "2018-02-11T06:49:12" - 平台最后更新日期
-}
+        "previous": "000000630ad27ed2acab3af49cf6e6ac7a8f0c39",
+        "timestamp": "2019-06-11T11:37:57",
+        "witness": 25997,
+        "transaction_merkle_root": "0000000000000000000000000000000000000000",
+        "witness_signature": "1f2e29ec9b44ead78ffae6ab8f8e11a5d9beab6064146b21f96f8e43b07eb88c741c87140270bd57ea9efd8fe9327adb53fe2aae5f583c848b87f76648886660c9",
+        "transactions": [], - 块中 包含的所有交易
+        "block_id": "00000064742ada3ddd9efc1c8bf35f28757fa150",
+        "signing_key": "YYW587fGuqZXBiXUsoKdwb73RP1WE7AHNgXF5kZ7vSueq7gp6WXGk",
+        "transaction_ids": []
+    }
 ```
+
+##### 1.6. 获取块状态（是否不可逆）
+
+  请求类型：GET
+
+  请求路径：/blocks/:block_num/confirmed
+
+  请求参数：
+  
+​ {Number} block_num - 验证的块高度（块号）
+
+  请求示例：
+```
+http://localhost:3001/api/v2/blocks/100/confirmed
+```
+
+
+  返回结果：
+```
+    {
+      code: 操作结果,
+      message: 返回消息,
+      data: 此块是否不可退回 
+    }
+```
+
 
 #### 
 
-#### 2. 平台激励相关接口
+#### 2. 文章相关接口
 
-##### 2.1. 转账到指定用户 transfer （需要安全验证的请求）
+##### 2.1. 查询文章
+
+  请求类型：GET
+
+  请求路径：/posts
+
+  请求参数：
+  ​{Number} platform - 平台账户id
+  ​{Number} poster - 发文账户id
+ ​ {Number} post_pid - 文章的pid
+
+```
+localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313
+```
+
+ 返回结果：
+
+```
+{
+  "id": "1.7.1",  - 文章Object id
+  "platform": 33313, - 平台 id
+  "poster": 30833, - 发文账号 id
+  "post_pid": 2, - 文章 pid
+  "origin_poster": 30833, - 转发原文 的 发文账号 id
+  "origin_post_pid": 1, - 转发原文 的 文章pid
+  "origin_platform": 33313, - 转发原文所在的平台账户id
+  "hash_value": "945456321", - 文章hash
+  "extra_data": "coammentextry", - 文章扩展信息
+  "title": "commentname", - 文章标题
+  "body": "commentbody", - 文章正文
+  "create_time": "2019-07-01T13:49:33", - 创建时间
+  "last_update_time": "2019-07-01T13:49:33", - 最后一次修改时间
+  "receiptors": [  - 受益人列表
+      [
+          30833,
+          {
+              "cur_ratio": 7500, - 所占受益比例
+              "to_buyout": false, - 是否出售受益比例
+              "buyout_ratio": 0, - 出售受益比例
+              "buyout_price": 0, - 出售价格
+              "buyout_expiration": "1969-12-31T23:59:59" - 出售过期时间
+          }
+      ],
+      [
+          33313,
+          {
+              "cur_ratio": 2500,
+              "to_buyout": false,
+              "buyout_ratio": 0,
+              "buyout_price": 0,
+              "buyout_expiration": "1969-12-31T23:59:59"
+          }
+      ]
+  ],
+  "license_lid": 1, # 版权license id
+  "permission_flags": 255, # 文章权限
+  "score_settlement": false # 文章是否已经参与过打分收益的分发
+}
+```
+
+
+
+##### 2.2. 发文章
+
+  请求类型：POST
+
+  请求路径：/posts
+
+    {Object} cipher - 请求对象密文对象
+    
+    {
+      ct, - 密文文本 16进制
+      iv, - 向量 16进制
+      s   - salt 16进制
+    }
+
+  请求对象结构:
+
+    {Number} platform - 平台账号
+    {Number} poster - 发文人账号
+    {String} title - 文章标题
+    {String} body - 文章内容
+    {String} url - 文章原文的链接（会呈现在链上文章的 extra_data 中）
+    {String} hash_value - hash值，如果不提供该参数，默认使用body内容的sha256值。
+    {Number} origin_platform - 原文平台账号（默认 null）
+    {Number} origin_poster - 原文发文者账号（默认 null）
+    {Number} origin_post_pid - 原文文章编号（默认 null）
+    {Number} time - 操作时间
+
+  请求示例：参照 安全请求验证
+
+```
+http://localhost:3001/api/v2/posts
+```
+
+  返回结果：
+
+```
+{
+  "block_num": 858010, - 交易广播时的引用块号
+  "txid": "10fdf2976789fb876c0ca7417abd74a6eecd8564", - 交易 id
+  "post": { - 文章详情
+      "platform": "33313",
+      "poster": "30833",
+      "post_pid": 6,
+      "hash_value": "79f0f1c9f5d2cb0762407dc77b92626bb970c14288c7e789552c7e840bf94b0f",
+      "extra_data": "{\"url\":\"https://www.biask.com/\"}",
+      "title": "title:YOYOW发布主网2.0源代码",
+      "body": "",
+      "extensions": {
+          "post_type": 0,
+          "license_lid": "1",
+          "permission_flags": 255,
+          "sign_platform": "33313"
+      },
+      "fee": {
+          "total": {
+              "amount": 0,
+              "asset_id": 0
+          }
+      }
+  }
+}
+```
+
+##### 2.3. 为文章打分
+
+平台可以使用授权账户的权限，代理账户为文章打分。
+
+  请求类型：POST
+
+  请求路径：/posts/score
+
+  请求参数：
+
+```
+{Object} cipher - 请求对象密文对象
+
+{
+  ct, - 密文文本 16进制
+  iv, - 向量 16进制
+  s   - salt 16进制
+}
+```
+
+  请求对象结构:
+
+```
+    {Number} from_account - 打分的账户
+    {Number} platform - 平台账号
+    {Number} poster - 发文人账号
+    {String} pid - 文章pid
+    {Number} score - 打分 分值，范围是[-5, 5]
+    {Number} csaf - 打分使用的积分数量
+    {Number} time - 操作时间
+```
+
+  请求示例：参照 安全请求验证
+```
+localhost:3000/api/v2/posts/score
+```
+
+  返回结果：
+
+```
+{
+  code: 操作结果,
+  message: 返回消息,
+  data: {
+    block_num: 操作所属块号
+    txid: 操作id
+  }
+}
+
+```
+
+
+##### 2.3. 为文章打赏
+
+平台可以代理普通账户打赏其他文章。
+
+打赏会动用账户的零钱，也会消耗账户授予授予平台的零钱额度
+
+  请求类型：POST
+
+  请求路径：/posts/reward-proxy
+
+  请求参数：
+
+```
+{Object} cipher - 请求对象密文对象
+
+{
+  ct, - 密文文本 16进制
+  iv, - 向量 16进制
+  s   - salt 16进制
+}
+```
+
+  请求对象结构:
+
+```
+    {Number} from_account - 打分的账户
+    {Number} platform - 平台账号
+    {Number} poster - 发文人账号
+    {String} pid - 文章pid
+    {Number} amount - 打分 分值，范围是[-5, 5]
+    {Number} csaf - 打分使用的积分数量
+    {Number} time - 操作时间
+```
+
+  请求示例：参照 安全请求验证
+```
+localhost:3000/api/v2/posts/reward-proxy
+```
+
+  返回结果：
+
+```
+{
+  code: 操作结果,
+  message: 返回消息,
+  data: {
+    block_num: 操作所属块号
+    txid: 操作id
+  }
+}
+```
+
+##### 2.4. 获取文章列表
+
+  请求类型：GET
+
+  请求路径：/posts/getPostList
+
+  请求参数：
+```
+{Number} platform - 平台账号
+{Number} poster -发文者账号（默认null，为null时查询该平台所有文章）
+{Number} limit - 加载数（默认20）
+{String} start - 开始时间 'yyyy-MM-ddThh:mm:ss' ISOString （加载下一页时将当前加载出的数据的最后一条的create_time传入，不传则为从头加载）
+```
+
+
+  请求示例：
+
+    http://localhost:3001/api/v2/posts/getPostList?start=2019-07-11T07:04:37&limit=2&poster=30834
+
+  返回结果：
+
+```
+{
+  code: 操作结果,
+  message: 返回消息,
+  data: [文章对象（参考获取单个文章返回的数据结构）]
+}
+```
+
+##### 2.5 获取某文章的打分列表
+
+  请求类型：GET
+
+  请求路径：/posts/listScores
+
+  请求参数：
+
+```
+{Number} platform - 平台账号
+{Number} poster -发文者账号
+{Number} pid - 文章的pid
+{Number} lower_bound_score - 起始的打分的object id， 默认为 "0.0.0"
+{Number} limit - 返回结果的最大数量
+{Boolean} list_cur_period - 是否只取当前评奖周期的数据，默认为true
+```
+
+  请求示例：
+
+    http://localhost:3001/api/v2/posts/listScores?platform=33313&poster=30833&pid=2&lower_bound_score=2.16.3&limit=10&list_cur_period=true
+
+  返回结果：
+
+```
+{
+    "code": 0,
+    "data": [ // 打分记录
+        {
+            "id": "2.16.3", // 打分的Object id
+            "from_account_uid": 31479, // 打分人
+            "platform": 33313,
+            "poster": 30833,
+            "post_pid": 2,
+            "score": 5,
+            "csaf": 23333,
+            "period_sequence": 0,   // 打分所在周期数
+            "profits": 0,  // 打分获得的收益
+            "create_time": "2019-07-07T07:40:45"
+        }
+    ],
+    "message": "操作成功"
+}
+```
+
+#### 3. 其他交易
+
+##### 3.1. 转账
 
   请求类型：POST
+
+  请求路径：/transfer
 
   请求参数：
 
@@ -314,245 +669,6 @@ localhost:3000/api/v1/transfer
     block_num: 操作所属块号
     txid: 操作id
   }
-}
-```
-
-
-
-##### 2.2. 获取转账二维码文本 getQRReceive（YOYOW APP 扫码可扫此二维码）
-
-  请求类型：GET
-
-  请求参数：
-
-```
-{Number} amount - 收款金额 （与收款备注都不填写的情况，用户可在APP中输入）
-
-{String} memo - 收款备注 （与收款金额都不填写的情况，用户可在APP中输入）
-
-{String | Number} asset - 转账资产符号 或 资产ID（默认为YOYO资产）
-```
-
-  请求示例：
-
-```
-http://localhost:3001/api/v1/getQRReceive?amount=98&memo=新的转账&asset_id=0
-```
-
-  返回结果：
-
-```
-{
-  code: 操作结果,
-  message: 返回消息,
-  data: 收款二维码字符串
-}
-```
-
-##### 2.3. 修改（仅增加白名单）授权用户资产白名单 updateAllowedAssets（需要安全验证的请求）
-
-如果用户启用了资产白名单，则需要将UIA（用户发行资产）添加到用户的资产白名单中，才可以进行转账等交易。
-
-  请求类型：POST
-
-  请求参数：
-
-```
-{Object} cipher - 请求对象密文对象
-
-{
-  ct, - 密文文本 16进制
-  iv, - 向量 16进制
-  s   - salt 16进制
-}
-```
-
-  请求对象结构:
-
-```
-{Number} uid - 目标账户id
-
-{Number} asset_id - 资产id
-```
-
-  请求示例：参照 安全请求验证
-```
-localhost:3000/api/v1/updateAllowedAssets
-```
-
-  返回结果：
-
-```
-{
-  code: 操作结果,
-  message: 返回消息,
-  data: {
-    block_num: 操作所属块号
-    txid: 操作id
-  }
-}
-
-```
-
-#### 3. 内容上链相关接口
-
-##### 3.1. 发送文章 post（需要安全验证的请求）
-
-  请求类型：POST
-
-  请求参数：
-
-    {Object} cipher - 请求对象密文对象
-    
-    {
-      ct, - 密文文本 16进制
-      iv, - 向量 16进制
-      s   - salt 16进制
-    }
-
-  请求对象结构:
-
-    {Number} platform - 平台账号
-    {Number} poster - 发文人账号
-    {Number} post_pid - 文章编号
-    {String} title - 文章标题
-    {String} body - 文章内容
-    {String} extra_data - 文章拓展信息
-    {String} hash_value - hash值，如果不提供该参数，默认使用body内容的sha256值。
-    {Number} origin_platform - 原文平台账号（默认 null）
-    {Number} origin_poster - 原文发文者账号（默认 null）
-    {Number} origin_post_pid - 原文文章编号（默认 null）
-    {Number} time - 操作时间
-
-  请求示例：参照 安全请求验证
-
-```
-localhost:3000/api/v1/post
-```
-
-  返回结果：
-
-    {
-      code: 操作结果,
-      message: 返回消息,
-      data: {
-        block_num: 操作所属块号
-        txid: 操作id
-      }
-    }
-
-##### 3.2. 更新文章 postUpdate（需要安全验证的请求）
-
-请求类型：POST
-
-  请求参数：
-
-```
-{Object} cipher - 请求对象密文对象
-
-{
-  ct, - 密文文本 16进制
-  iv, - 向量 16进制
-  s   - salt 16进制
-}
-```
-请求对象结构:
-```
-{Number} platform - 平台账号
-
-{Number} poster - 发文人账号
-
-{Number} post_pid - 文章编号
-
-{String} title - 文章标题
-
-{String} body - 文章内容
-
-{String} extra_data - 文章拓展信息
-
-{Number} time - 操作时间
-```
-  备注：修改文章操作时，title，body 和 extra_data 必须出现至少一个，并且与原文相同字段的内容不同
-
-  请求示例：参照 安全请求验证
-
-```
-localhost:3000/api/v1/postUpdate
-```
-
-  返回结果：
-```
-{
-  code: 操作结果,
-  message: 返回消息,
-  data: {
-    block_num: 操作所属块号
-    txid: 操作id
-  }
-}
-```
-##### 3.3. 获取文章 getPost
-
-  请求类型：GET
-
-  请求参数：
-
-    {Number} platform - 平台账号
-    {Number} poster -发文者账号
-    {Number} post_pid - 文章编号
-
-  请求示例：
-
-    http://localhost:3001/api/v1/getPost?platform=217895094&poster=210425155&post_pid=3
-
-  返回结果：
-
-```
-{
-  code: 操作结果,
-  message: 返回消息,
-  data: {
-    "id":"1.7.12", - 文章ObjectId
-    "platform":217895094, - 平台账号
-    "poster":210425155, - 发文者账号
-    "post_pid":5, - 文章编号
-    "hash_value":"bb76a28981710f513479fa0d11fee154795943146f364da699836fb1f375875f", - 文章body hash值
-    "extra_data":"{}", - 拓展信息
-    "title":"test title in js for update", - 文章title
-    "body":"test boyd in js for update", - 文章内容
-    "create_time":"2018-03-12T10:22:03", - 文章创建时间
-    "last_update_time":"2018-03-12T10:23:24", - 文章最后更新时间
-    "origin_platform", - 原文平台账号 （仅对于创建文章时为转发时存在）
-    "origin_poster", - 原文发文者账号 （仅对于创建文章时为转发时存在）
-    "origin_post_pid" - 原文发文编号 （仅对于创建文章时为转发时存在）
-  }
-}
-```
-
-##### 3.4. 获取文章列表 getPostList
-
-  请求类型：GET
-
-  请求参数：
-```
-{Number} platform - 平台账号
-{Number} poster -发文者账号（默认null，为null时查询该平台所有文章）
-{Number} limit - 加载数（默认20）
-{String} start - 开始时间 'yyyy-MM-ddThh:mm:ss' ISOString （加载下一页时将当前加载出的数据的最后一条的create_time传入，不传则为从头加载）
-```
-
-
-  请求示例：
-
-    http://localhost:3001/api/v1/getPostList?platform=217895094&poster=210425155&limit=2&start=2018-03-12T09:35:36
-
-  返回结果：
-
-```
-{
-  code: 操作结果,
-  message: 返回消息,
-  data: [文章对象（参考获取单个文章返回的数据结构）]
 }
 ```
 
