@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
-var api = require('./routes/api');
 var auth = require('./routes/auth');
 
 var config = require("./conf/config");
@@ -28,40 +27,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'doc')));
 
-// 跨域设置
-var protocols = ['http://', 'https://'];
-app.use(function (req, res, next) {
-    let origin = req.headers.referer || req.headers.origin || false;
-    if (origin) {
-        if (origin.endsWith("/")) origin = origin.substr(0, origin.length - 1);
-        for (var ao of config.allow_ip) {
-            if (origin.startsWith(protocols[0] + ao) || origin.startsWith(protocols[1] + ao)) {
-                res.header('Access-Control-Allow-Origin', origin);
-                res.header('Access-Control-Allow-Methods', 'GET,POST');
-                res.header('Access-Control-Allow-Headers', 'Content-Type');
-                res.header('Access-Control-Allow-Credentials', 'true');
-            }
-        }
-    }
-    next();
-});
-
-/**
- * 处理访问IP限制的中间件
- */
-app.use((req, res, next) => {
-  let clientIp = utils.getRealIp(req);
-  if (config.allow_ip.indexOf(clientIp) < 0) {
-      var err = new Error("Forbidden");
-      err.status = 403;
-      next(err);
-  } else {
-      next();
-  }
-});
-
 app.use('/', index);
-app.use('/api/v1', api);
+var VERSIONS = {'Version 1': '/v1', 'Version 2': '/v2'};
+for (var k in VERSIONS) {
+  app.use(`/api${VERSIONS[k]}`, require('./routes' + VERSIONS[k]));
+}
+
 app.use('/auth', auth);
 
 // catch 404 and forward to error handler
