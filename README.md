@@ -16,7 +16,7 @@ YOYOW中间件是通过YOYOW node 的API接口与YOYOW网络通讯，为平台�
 ```javascript
 {
     // api服务器地址，测试网公共api地址如下，正式网部署请更改该地址
-    apiServer: "ws://47.52.155.181:10011",
+    apiServer: "wss://api.testnet.yoyow.org",
 
     // 安全请求有效时间，单位s，如果请求的内容超过有效期，会返回 1003 请求已过期
     secure_ageing: 60,
@@ -43,10 +43,7 @@ YOYOW中间件是通过YOYOW node 的API接口与YOYOW网络通讯，为平台�
     to_balance: false,
 
     // 钱包授权页URL，测试网地址如下，正式网地址“https://wallet.yoyow.org/#/authorize-service”
-    wallet_url: "http://demo.yoyow.org:8000/#/authorize-service",
-
-    // 允许接入的IP列表，强制指定明确的来访IP地址，暂不支持"*" 或 "0.0.0.0"
-    allow_ip: ["localhost", "127.0.0.1"]
+    wallet_url: "http://demo.yoyow.org:8000/#/authorize-service"
 }
 ```
 需要注意的是：
@@ -64,11 +61,11 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
 ### 手动部署
 
 1. clone 源码
-    `git clone git@github.com:yoyow-org/yoyow-node-sdk.git`
+    `git clone https://github.com/yoyow-org/yoyow-middleware.git`
 2. 修改中间件配置 
-    参照配置文件说明()，修改文件`yoyow-node-sdk/middleware/conf/config.js`
+    参照配置文件说明()，修改文件`yoyow-middleware/conf/config.js`
 3. 安装中间件服务所需node库
-    进入 `~/yoyow-node-sdk/middleware/` 目录
+    进入 `~/yoyow-middleware/` 目录
     `npm install`
 4. 启动中间件服务
     `npm start`
@@ -96,7 +93,7 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
 
   请求示例：
 
-    localhost:3000/api/v2//accounts/30833
+    localhost:3000/api/v2/accounts/30833
 
   返回结果：
 
