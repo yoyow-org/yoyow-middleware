@@ -15,7 +15,7 @@ YOYOW中间件是通过YOYOW node 的API接口与YOYOW网络通讯，为平台�
 
 ```javascript
 {
-    // api服务器地址，测试网公共api地址如下，正式网部署请更改该地址
+    // api服务器地址，测试网公共api地址如下，正式网部署请更改该地址,例如正式网公共的api地址：wss://api-bj.yoyow.org/ws
     apiServer: "wss://api.testnet.yoyow.org",
 
     // 安全请求有效时间，单位s，如果请求的内容超过有效期，会返回 1003 请求已过期
@@ -96,7 +96,7 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
     localhost:3000/api/v2/accounts/30833
 
   返回结果：
-
+```
     {
       code: 操作结果,
       message: 返回消息,
@@ -139,6 +139,7 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
         ]
       }
     }
+```
 
 ##### 1.2. 获取指定账户近期活动记录 /accounts/:uid/histories
 
@@ -623,9 +624,230 @@ localhost:3000/api/v2/posts/reward-proxy
 }
 ```
 
-#### 3. 其他交易
+#### 3. @TODO 广告 相关  
 
-##### 3.1. 转账
+##### 3.1. @TODO 发布广告位
+
+  请求类型：POST
+
+  请求路径：/advertising
+
+    {Object} cipher - 请求对象密文对象
+    
+    {
+      ct, - 密文文本 16进制
+      iv, - 向量 16进制
+      s   - salt 16进制
+    }
+
+  请求对象结构:
+
+    {Number} platform - 平台账号
+    {String} platform - 广告位描述
+    {Number} unit_price - 单位时间价格
+    {Number} unit_time - 单位时间
+
+  请求示例：参照 安全请求验证
+
+```
+http://localhost:3001/api/v2/advertising
+```
+
+  返回结果：
+
+```
+{
+}
+```
+
+##### 3.2 @TODO 更新广告位
+
+  请求类型：PATCH
+
+  请求路径：/advertising
+  {Object} cipher - 请求对象密文对象
+  
+  {
+    ct, - 密文文本 16进制
+    iv, - 向量 16进制
+    s   - salt 16进制
+  }
+
+  请求对象结构:
+
+
+    {Number} platform - 平台账号
+    {String} advertising_aid - 广告id
+    {String} description - 广告位描述
+    {Number} unit_price - 单位时间价格
+    {Number} unit_time - 单位时间
+    {Boolean} on_sell - 出售状态
+
+  请求示例：
+
+    localhost:3000/api/v2/advertising
+
+  返回结果：
+
+```
+{
+}
+```
+
+##### 3.3 @TODO 购买广告位
+
+  请求类型：POST
+
+  请求路径：/advertising/buy
+  {Object} cipher - 请求对象密文对象
+  
+  {
+    ct, - 密文文本 16进制
+    iv, - 向量 16进制
+    s   - salt 16进制
+  }
+
+  请求对象结构:
+
+    {Number} account - 账户的id或名字
+    {Number} platform - 平台账号
+    {String} advertising_aid - 广告id
+    {Number} start_time - 开始时间
+    {Number} buy_number - 购买数目
+    {String} extra_data - 额外信息
+    {String} memo - 备注信息
+
+  请求示例：
+
+    localhost:3000/api/v2/advertising/buy
+
+  返回结果：
+
+```
+{
+}
+```
+
+##### 3.4 @TODO 确认广告位订单
+
+  请求类型：POST
+
+  请求路径：/advertising/confirm
+  {Object} cipher - 请求对象密文对象
+  
+  {
+    ct, - 密文文本 16进制
+    iv, - 向量 16进制
+    s   - salt 16进制
+  }
+
+  请求对象结构:
+
+    {Number} platform - 平台账号
+    {String} advertising_aid - 广告id
+    {Number} advertising_order_oid - 广告位订单的id 
+    {Boolean} confirm - 确认或拒绝广告位订单
+
+  请求示例：
+
+    localhost:3000/api/v2/advertising/confirm
+
+  返回结果：
+
+```
+{
+}
+```
+
+##### 3.5 @TODO 赎回广告位订单
+
+  请求类型：POST
+
+  请求路径：/advertising/ransom
+  {Object} cipher - 请求对象密文对象
+  
+  {
+    ct, - 密文文本 16进制
+    iv, - 向量 16进制
+    s   - salt 16进制
+  }
+
+  请求对象结构:
+
+    {Number} from_account - 用户的id或名字
+    {Number} platform - 平台账号
+    {String} advertising_aid - 广告id
+    {Number} advertising_order_oid - 广告位订单的id 
+
+  请求示例：
+
+    localhost:3000/api/v2/advertising/ransom
+
+  返回结果：
+
+```
+{
+}
+```
+
+##### 3.6 @TODO 赎回广告位订单
+
+  请求类型：POST
+
+  请求路径：/advertising/ransom
+  {Object} cipher - 请求对象密文对象
+  
+  {
+    ct, - 密文文本 16进制
+    iv, - 向量 16进制
+    s   - salt 16进制
+  }
+
+  请求对象结构:
+
+    {Number} from_account - 用户的id或名字
+    {Number} platform - 平台账号
+    {String} advertising_aid - 广告id
+    {Number} advertising_order_oid - 广告位订单的id 
+
+  请求示例：
+
+    localhost:3000/api/v2/advertising/ransom
+
+  返回结果：
+
+```
+{
+}
+```
+
+##### 3.7 @TODO 查询账户授予平台的权限
+
+  请求类型：GET
+
+  请求路径：/advertising
+
+  请求参数：
+
+    {Number} platform - 平台账户
+    {String} lower_bound_advertising - 起始广告的id
+    {Number} limit - 返回结果数
+ 
+  请求示例：
+
+    localhost:3000/api/v2/advertising?platform=33136&lower_bound_advertising=0.0.0&limit=100
+
+  返回结果：
+
+```
+{
+}
+```
+
+
+#### 4. 其他交易
+
+##### 4.1. 转账
 
   请求类型：POST
 
@@ -653,7 +875,7 @@ localhost:3000/api/v2/posts/reward-proxy
 请求示例：参照 安全请求验证
 
 ```
-localhost:3000/api/v1/transfer
+localhost:3000/api/v2/transfer
 ```
 
  返回结果：
@@ -670,9 +892,9 @@ localhost:3000/api/v1/transfer
 ```
 
 
-#### 4. Auth 相关
+#### 5. Auth 相关
 
-##### 4.1. 签名平台 sign
+##### 5.1. 签名平台 sign
 
   请求类型：GET
 
@@ -697,7 +919,7 @@ localhost:3000/api/v1/transfer
 }
 ```
 
-##### 4.2 签名验证 verify
+##### 5.2 签名验证 verify
 
   请求类型：GET
 
@@ -722,7 +944,7 @@ localhost:3000/api/v1/transfer
       }
     }
 
-##### 4.3 签名平台 返回二维码 signQR
+##### 5.3 签名平台 返回二维码 signQR
 
   请求类型：GET
 
@@ -743,7 +965,7 @@ localhost:3000/api/v1/transfer
 }
 ```
 
-##### 4.4 平台拓展信息协议说明
+##### 5.4 平台拓展信息协议说明
 
 平台属性 extra_data 拓展信息 JSON对象格式字符串 中
 ```javascript
@@ -757,7 +979,7 @@ localhost:3000/api/v1/transfer
 }
 ```
 
-##### 4.5 平台扫码登录
+##### 5.5 平台扫码登录
 
 App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接口 ，发送回用户签名对象
 
@@ -777,7 +999,9 @@ App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接
   {String} message - 操作结果描述
 }
 ```
+
 ### 请求返回 error code 状态说明
+
 ```
 1001 无效的签名类型
 
@@ -834,7 +1058,7 @@ App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接
     let cipher = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key);
     
     $.ajax({
-      url: 'localhost:3000/api/v1/transfer',
+      url: 'localhost:3000/api/v2/transfer',
       type: 'POST',
       data: {
         ct: cipher.ciphertext.toString(CryptoJS.enc.Hex),
