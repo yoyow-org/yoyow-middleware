@@ -29,10 +29,11 @@ router
   .get ('/posts/listScores',              Post.list_scores)                                       // 文章的所有打分列表
   .post('/posts/reward-proxy',       Secure.validQueue,          Post.reward_proxy)          // 打赏文章 - 由平台代理 
 
-  .post('/posts',                    Secure.validQueue,          Post.create__simple) 
+  .post('/posts/simple',                    Secure.validQueue,          Post.create__simple) 
   .get ('/posts/getPostList',             Post.list)
 
   .post ('/transfer',                Secure.validQueue,          Transfer.transfer)
+  .post('/posts',                    Secure.validQueue,          Post.create_post) 
 
   // .get ('/profits/post/:post_id',         Profit.by_post)
   // .get ('/profits/poster/:poster_id',     Profit.by_poster)
