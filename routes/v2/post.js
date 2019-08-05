@@ -113,7 +113,7 @@ module.exports = {
   
       bodyData.platform = bodyData.platform || config.platform_id;    // 默认设为平台
       bodyData.poster   = bodyData.poster   || bodyData.platform;     // poster默认为平台
-      console.log(bodyData);
+      // console.log(bodyData);
   
       // if(! utils.ensureParams(req, res, ['license_lid'])) return;
   
