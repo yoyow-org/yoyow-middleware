@@ -64,22 +64,24 @@ module.exports = {
       utils.error(res, e);
     });
   },
-
+  // 创建 新文章
   create__simple: async (req, res) => {
     // 简单模式
-    // poster  => 默认为：平台
+    // poster  
     // title
     // body    => 用来计算hash， 不上链
     // url     => 放在extra data字段中（参考接入规范）
-    // *lic_id => license id
+    // license_lid => license id
 
-    req.body.platform = req.body.platform || config.platform_id;    // 默认设为平台
-    req.body.poster   = req.body.poster   || req.body.platform;     // poster默认为平台
+    let bodyData = req.decryptedData;
 
-    if(! utils.ensureParams(req, res, ['license_lid'])) return;
+    bodyData.platform = bodyData.platform || config.platform_id;    // 默认设为平台
+    bodyData.poster   = bodyData.poster   || bodyData.platform;     // poster默认为平台
+
+    // if(! utils.ensureParams(req, res, ['license_lid'])) return;
 
     try {
-      let result = await Api.post_simple(req.body);
+      let result = await Api.post_simple(bodyData);
       if(result.code) {
         throw result;
       }
@@ -88,6 +90,45 @@ module.exports = {
       utils.error(res, e);
     }
   },
+
+    // 创建 新文章
+    create_post: async (req, res) => {
+      // 原始的接口
+      // platform, title, body, extra_data, ext={}, hash_value=null, origin_platform = null, origin_poster = null, origin_post_pid = null
+      // poster  => 默认为：平台
+      // post_pid
+      // title
+      // body    => 用来计算hash， 不上链
+      // extra_data
+      // ext
+      // hash_value
+      // origin_platform 
+      // origin_poster
+      // origin_post_pid
+      // license_lid => license id
+
+      let bodyData = req.decryptedData;
+      // let bodyData = req.params;
+
+  
+      bodyData.platform = bodyData.platform || config.platform_id;    // 默认设为平台
+      bodyData.poster   = bodyData.poster   || bodyData.platform;     // poster默认为平台
+      // console.log(bodyData);
+  
+      // if(! utils.ensureParams(req, res, ['license_lid'])) return;
+  
+      try {
+        let result = await Api.post(bodyData);
+        if(result.code) {
+          throw result;
+        }
+        utils.success(res, result);
+      } catch (e) {
+        utils.error(res, e);
+      }
+    },
+
+
 
   update: (req, res) => {
     let {platform, poster, post_pid, title, body, extra_data} = req.decryptedData;
