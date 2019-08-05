@@ -94,7 +94,6 @@ module.exports = {
     // 创建 新文章
     create_post: async (req, res) => {
       // 原始的接口
-      // platform, title, body, extra_data, ext={}, hash_value=null, origin_platform = null, origin_poster = null, origin_post_pid = null
       // poster  => 默认为：平台
       // post_pid
       // title

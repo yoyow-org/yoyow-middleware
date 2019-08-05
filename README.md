@@ -383,12 +383,17 @@ localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313
 ```
 
 
+##### 2.2. 简单的发文章接口
 
-##### 2.2. 发文章
+  该接口为精简接口，可以满足简单的发文需求
+  只支持发原创文章，文章post_type为0
+  文章的受益权采取默认值，25%受益权归属平台，75%归属作者
+  文章的权限采用默认值，允许评论，允许打分，允许打赏，允许转发，允许出售收益
+  文章的转发价格为空，即实际上不允许转发。
 
   请求类型：POST
 
-  请求路径：/posts
+  请求路径：/posts/simple
 
     {Object} cipher - 请求对象密文对象
     
@@ -406,12 +411,113 @@ localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313
     {String} body - 文章内容
     {String} url - 文章原文的链接（会呈现在链上文章的 extra_data 中）
     {String} hash_value - hash值，如果不提供该参数，默认使用body内容的sha256值。
-    {Number} origin_platform - 原文平台账号（默认 null）
-    {Number} origin_poster - 原文发文者账号（默认 null）
-    {Number} origin_post_pid - 原文文章编号（默认 null）
+    {Number} license_lid - License ID
     {Number} time - 操作时间
 
   请求示例：参照 安全请求验证
+
+```
+http://localhost:3001/api/v2/posts/simple
+```
+
+  返回结果：
+
+```
+{
+  "block_num": 858010, - 交易广播时的引用块号
+  "txid": "10fdf2976789fb876c0ca7417abd74a6eecd8564", - 交易 id
+  "post": { - 文章详情
+      "platform": "33313",
+      "poster": "30833",
+      "post_pid": 6,
+      "hash_value": "79f0f1c9f5d2cb0762407dc77b92626bb970c14288c7e789552c7e840bf94b0f",
+      "extra_data": "{\"url\":\"https://www.biask.com/\"}",
+      "title": "title:YOYOW发布主网2.0源代码",
+      "body": "",
+      "extensions": {
+          "post_type": 0,
+          "license_lid": "1",
+          "permission_flags": 255,
+          "sign_platform": "33313"
+      },
+      "fee": {
+          "total": {
+              "amount": 0,
+              "asset_id": 0
+          }
+      }
+  }
+}
+```
+
+
+
+##### 2.3. 发文章
+
+
+  请求类型：POST
+
+  请求路径：/posts/simple
+
+    {Object} cipher - 请求对象密文对象
+    
+    {
+      ct, - 密文文本 16进制
+      iv, - 向量 16进制
+      s   - salt 16进制
+    }
+
+  请求对象结构:
+
+    {Number} platform - 平台账号
+    {Number} poster - 发文人账号
+    {String} title - 文章标题
+    {String} body - 文章内容
+    {String} url - 文章原文的链接（会呈现在链上文章的 extra_data 中）
+    {String} hash_value - hash值，如果不提供该参数，默认使用body内容的sha256值。
+    {Object} extensions - 文章的扩展属性, 参考下文
+    {Number} origin_platform -  原文章的平台id
+    {Number} origin_poster - 原文章的作者id
+    {Number} origin_post_pid - 原文章的pid
+    {Number} time - 操作时间
+
+  文章扩展属性结构：
+  ```javascript
+  {
+  "post_type": 0,  // 文章类型 0-原创文章， 1- 评论文章（需要指定原文的平台作者和pid信息）， 2- 转发文章（需要指定原文的平台作者和pid信息）
+  // "forward_price": null,  // 设置转发价格，可选项，不填写则实际不会允许转发
+  "receiptors": [[ // 文章受益人列表 最多不超过5个人，可选项，不填写则 25%受益权归属平台，75%归属作者
+      271617537,{
+        "cur_ratio": 2500, // 平台必须占有 25% 的文章受益权
+        "to_buyout": false,
+        "buyout_ratio": 0,
+        "buyout_price": 0,
+        "buyout_expiration": 0
+      }
+    ],[
+      291774116,{
+        "cur_ratio": 6000,  // 作者占有60%的受益权。（作者至少占有25%的文章受益权，其他的可以出售）
+        "to_buyout": true,  // 是否出售受益权
+        "buyout_ratio": 3000, // 出售 30%的受益权
+        "buyout_price": 3000000,  // 出售价格 30 个YOYO（注意精度）
+        "buyout_expiration": 1564999949 // 出售挂单的过期时间，值为时间戳，会转换成utc时间。
+      }
+    ],[
+      337250355,{
+        "cur_ratio": 1500,
+        "to_buyout": false,
+        "buyout_ratio": 0,
+        "buyout_price": 0,
+        "buyout_expiration": 0
+      }
+    ]
+  ],
+  "license_lid": 1,  // license_id 必须指定
+  "permission_flags": 255 // 文章的权限标记值，必须指定，参考官方文档中的相关介绍
+}
+```
+
+  请求示例：参照 仓库中 test/examples/create_post_example.js
 
 ```
 http://localhost:3001/api/v2/posts
@@ -447,7 +553,7 @@ http://localhost:3001/api/v2/posts
 }
 ```
 
-##### 2.3. 为文章打分
+##### 2.4. 为文章打分
 
 平台可以使用授权账户的权限，代理账户为文章打分。
 
@@ -499,7 +605,7 @@ localhost:3000/api/v2/posts/score
 ```
 
 
-##### 2.3. 为文章打赏
+##### 2.5. 为文章打赏
 
 平台可以代理普通账户打赏其他文章。
 
@@ -551,7 +657,7 @@ localhost:3000/api/v2/posts/reward-proxy
 }
 ```
 
-##### 2.4. 获取文章列表
+##### 2.6. 获取文章列表
 
   请求类型：GET
 
@@ -580,7 +686,7 @@ localhost:3000/api/v2/posts/reward-proxy
 }
 ```
 
-##### 2.5 获取某文章的打分列表
+##### 2.7 获取某文章的打分列表
 
   请求类型：GET
 
