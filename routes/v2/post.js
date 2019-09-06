@@ -30,7 +30,7 @@ module.exports = {
     Api.scoreCreate(bodyData).then(result => {
       utils.success(res, result);
     }).catch(e => {
-      utils.error(res, e);
+      utils.error(res, errorUtils.formatError(e));
     });
   },
 
