@@ -30,7 +30,7 @@ module.exports = {
     Api.scoreCreate(bodyData).then(result => {
       utils.success(res, result);
     }).catch(e => {
-      utils.error(res, e);
+      utils.error(res, errorUtils.formatError(e));
     });
   },
 
@@ -87,7 +87,7 @@ module.exports = {
       }
       utils.success(res, result);
     } catch (e) {
-      utils.error(res, e);
+      utils.error(res, errorUtils.formatError(e));
     }
   },
 
@@ -123,7 +123,7 @@ module.exports = {
         }
         utils.success(res, result);
       } catch (e) {
-        utils.error(res, e);
+        utils.error(res, errorUtils.formatError(e));
       }
     },
 
@@ -134,7 +134,7 @@ module.exports = {
     Api.postUpdate(platform, poster, post_pid, title, body, extra_data).then(tx => {
       utils.success(res, tx);
     }).catch(e => {
-      utils.error(res, e);
+      utils.error(res, errorUtils.formatError(e));
     });
   },
 
@@ -162,7 +162,7 @@ module.exports = {
     Api.rewardProxy(bodyData).then(result => {
       utils.success(res, result);
     }).catch(e => {
-      utils.error(res, e);
+      utils.error(res, errorUtils.formatError(e));
     });
   },
 

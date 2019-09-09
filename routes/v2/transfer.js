@@ -18,7 +18,7 @@ module.exports = {
           utils.success(res, tx);
         }).catch(e => {
           console.log(e);
-          utils.error(res, e);
+          utils.error(res, errorUtils.formatError(e));
         });
     }
 }
