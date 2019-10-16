@@ -304,7 +304,9 @@ http://localhost:3001/api/v2/blocks/100
 
 请求参数：
 
-​ {Number} block_num - 验证的块高度（块号）
+```
+​{Number} block_num - 验证的块高度（块号）
+```
 
 请求示例：
 
@@ -1137,7 +1139,11 @@ localhost:3000/api/v2/transfer
 
 请求类型：GET
 
-请求参数：无
+请求参数：
+
+```
+无
+```
 
 请求示例：
 
