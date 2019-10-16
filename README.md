@@ -153,9 +153,9 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
 
 请求参数：
 
-{Number} op_type - 查询 op 类型 '0' 为 转账 op，默认为 null 即查询所有 OP 类型
-{Number} start 查询开始编号，为 0 时则从最新记录开始查询，默认为 0
-{Number} limit - 查询长度，最大不可超过 100 条，默认为 10
+    {Number} op_type - 查询 op 类型 '0' 为 转账 op，默认为 null 即查询所有 OP 类型
+    {Number} start 查询开始编号，为 0 时则从最新记录开始查询，默认为 0
+    {Number} limit - 查询长度，最大不可超过 100 条，默认为 10
 
 请求示例：
 
@@ -270,13 +270,14 @@ http://localhost:3001/api/v2/assets/YOYO
 
 请求参数：
 
-​ {Number} block_num - 块高度（块号）
+```
+​{Number} block_num - 块高度（块号）
+```
 
 请求示例：
 
 ```
 http://localhost:3001/api/v2/blocks/100
-
 ```
 
 返回结果：
@@ -332,9 +333,12 @@ http://localhost:3001/api/v2/blocks/100/confirmed
 请求路径：/posts
 
 请求参数：
+
+```
 ​{Number} platform - 平台账户 id
 ​{Number} poster - 发文账户 id
-​ {Number} post_pid - 文章的 pid
+​{Number} post_pid - 文章的 pid
+```
 
 ```
 localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313

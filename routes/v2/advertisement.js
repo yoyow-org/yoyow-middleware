@@ -79,7 +79,7 @@ module.exports = {
 async function list_purchaser_order(req, res) {
   let { purchaser, lower_bound_advertising_order = 0, limit = 100 } = req.query
 
-  Api.getAdPurchaserOrders({
+  Api.listAdsOrdersByPurchaser({
     purchaser,
     lower_bound_advertising_order: '2.19.' + lower_bound_advertising_order,
     limit
@@ -99,7 +99,7 @@ async function list_ads_aid_order(req, res) {
     lower_bound_advertising_order = 0,
     limit = 100
   } = req.query
-  Api.getAdAdaAidOrders({
+  Api.listAdsOrdersByAdsAid({
     platform,
     advertising_aid_type,
     lower_bound_advertising_order,
