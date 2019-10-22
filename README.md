@@ -1062,29 +1062,6 @@ s - salt 16 进制
 
 ```
 
-##### 3.7 @TODO 查询账户授予平台的权限
-
-请求类型：GET
-
-请求路径：/advertising
-
-请求参数：
-
-    {Number} platform - 平台账户
-    {String} lower_bound_advertising - 起始广告的id
-    {Number} limit - 返回结果数
-
-请求示例：
-
-    localhost:3000/api/v2/advertising?platform=33136&lower_bound_advertising=0.0.0&limit=100
-
-返回结果：
-
-```
-{
-}
-```
-
 #### 4. 其他交易
 
 ##### 4.1. 转账
@@ -1096,7 +1073,7 @@ s - salt 16 进制
 请求参数：
 
 ```
- {Object} cipher - 请求的密文对象，格式如下
+{Object} cipher - 请求的密文对象，格式如下
 {
   ct, - 密文文本 16进制
   iv, - 向量 16进制
