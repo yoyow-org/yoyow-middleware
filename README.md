@@ -737,9 +737,253 @@ localhost:3000/api/v2/posts/reward-proxy
 }
 ```
 
-#### 3. @TODO 广告 相关
+#### 3. 收益相关
 
-##### 3.1 发布广告位
+##### 3.1 获取文章收益详情
+
+请求类型：GET
+
+请求路径：/profits/post
+
+请求参数：
+
+```
+{Number} begin_period - 起始周期号
+{Number} end_period - 截止周期号
+{Number} platform - 平台账号
+{Number} poster -发文者账号
+{Number} post_pid - 文章id
+```
+
+请求示例：
+
+    http://localhost:3001/api/v2/profits/post?poster=305154832&platform=396291915&pid=143&begin_period=28489&end_period=28499
+
+返回结果：
+
+```
+{
+  {
+    "code": 0,
+    "data": [{
+      "id": "1.11.182",
+      "platform": 396291915,
+      "poster": 305154832,
+      "post_pid": 143,
+      "total_csaf": 100000,
+      "total_rewards": [],
+      "period_sequence": 28497,
+      "positive_win": true,
+      "post_award": 951293,
+      "forward_award": 0,
+      "receiptor_details": [
+        [
+          305154832,
+          {
+            "forward": 0,
+            "post_award": 535102,
+            "rewards": []
+          }
+        ],
+        [
+          396291915,
+          {
+            "forward": 0,
+            "post_award": 178368,
+            "rewards": []
+          }
+        ]
+      ]
+    }],
+    "message": "操作成功"
+  }
+}
+```
+
+##### 3.2 获取文章作者收益详情
+
+请求类型：GET
+
+请求路径：/profits/poster
+
+请求参数：
+
+```
+{Number} begin_period - 起始周期号
+{Number} end_period - 截止周期号
+{Number} poster -发文者账号
+{Number} lower_bound_index - 起始active序号
+{Number} limit - 显示条数
+```
+
+请求示例：
+
+    http://localhost:3001/api/v2/profits/poster?poster=305154832&pid=143&begin_period=28489&end_period=28499&lower_bound_index=0&limit=100
+
+返回结果：
+
+```
+{
+  "code": 0,
+  "data": [{
+    "cur_period": 28490,
+    "poster_account": 305154832,
+    "total_forward": 0,
+    "total_rewards": [],
+    "total_post_award": 481591,
+    "active_objects": [{
+        "id": "1.11.180",
+        "platform": 396291915,
+        "poster": 305154832,
+        "post_pid": 81,
+        "total_csaf": 8000,
+        "total_rewards": [],
+        "period_sequence": 28490,
+        "positive_win": true,
+        "post_award": 475646,
+        "forward_award": 0,
+        "receiptor_details": [
+          [
+            305154832,
+            {
+              "forward": 0,
+              "post_award": 231877,
+              "rewards": []
+            }
+          ],
+          [
+            396291915,
+            {
+              "forward": 0,
+              "post_award": 89185,
+              "rewards": []
+            }
+          ],
+          [
+            509652620,
+            {
+              "forward": 0,
+              "post_award": 35673,
+              "rewards": []
+            }
+          ]
+        ]
+      }
+    ]
+  }],
+  "message": "操作成功"
+}
+```
+
+##### 3.3  获取平台收益详情
+
+请求类型：GET
+
+请求路径：/profits/platform
+
+请求参数：
+
+```
+{Number} begin_period - 起始周期号
+{Number} end_period - 截止周期号
+{Number} platform - 平台账号
+{Number} lower_bound_index - 起始active序号
+{Number} limit - 显示数量
+```
+
+请求示例：
+
+    http://localhost:3001/api/v2/profits/platform?platform=396291915&begin_period=28489&end_period=28499&lower_bound_index=0&limit=100
+
+返回结果：
+
+```
+{
+  "code": 0,
+  "data": [{
+      "cur_period": 28490,
+      "platform_account": 396291915,
+      "platform_name": "币问",
+      "rewards_profits": [],
+      "foward_profits": 0,
+      "post_profits": 178370,
+      "post_profits_by_platform": 178370,
+      "platform_profits": 951293,
+      "active_objects": [{
+          "id": "1.11.180",
+          "platform": 396291915,
+          "poster": 305154832,
+          "post_pid": 81,
+          "total_csaf": 8000,
+          "total_rewards": [],
+          "period_sequence": 28490,
+          "positive_win": true,
+          "post_award": 475646,
+          "forward_award": 0,
+          "receiptor_details": [
+            [
+              305154832,
+              {
+                "forward": 0,
+                "post_award": 231877,
+                "rewards": []
+              }
+            ],
+            [
+              396291915,
+              {
+                "forward": 0,
+                "post_award": 89185,
+                "rewards": []
+              }
+            ],
+            [
+              509652620,
+              {
+                "forward": 0,
+                "post_award": 35673,
+                "rewards": []
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "message": "操作成功"
+}
+```
+
+##### 3.4  获取打分收益
+
+请求类型：GET
+
+请求路径：/profits/score
+
+请求参数：
+
+```
+{Number} account - 投票人id
+{Number} period - 收益分配周期号
+```
+
+请求示例：
+
+    http://localhost:3001/api/v2/profits/score?account=291774116&period=28497
+
+返回结果：
+
+```
+{
+  "code": 0,
+  "data": 237823, // 收益
+  "message": "操作成功"
+}
+```
+
+#### 4. 广告 相关
+
+##### 4.1 发布广告位
 
 请求类型：POST
 
@@ -791,7 +1035,7 @@ http://localhost:3001/api/v2/advertisings
 }
 ```
 
-##### 3.2 更新广告位
+##### 4.2 更新广告位
 
 请求类型：POST
 
@@ -841,7 +1085,7 @@ s - salt 16 进制
 }
 ```
 
-##### 3.3 @TODO 购买广告位
+##### 4.3 @TODO 购买广告位
 
 请求类型：POST
 
@@ -893,7 +1137,7 @@ s - salt 16 进制
 }
 ```
 
-##### 3.4 确认广告位订单
+##### 4.4 确认广告位订单
 
 请求类型：POST
 
@@ -943,7 +1187,7 @@ s - salt 16 进制
 }
 ```
 
-##### 3.5 @TODO 赎回广告位订单
+##### 4.5 @TODO 赎回广告位订单
 
 请求类型：POST
 
@@ -974,7 +1218,7 @@ s - salt 16 进制
 }
 ```
 
-##### 3.6 获取平台广告列表
+##### 4.6 获取平台广告列表
 
 请求类型：GET
 
@@ -1011,7 +1255,7 @@ s - salt 16 进制
 }
 ```
 
-##### 3.7 获取广告位订单
+##### 4.7 获取广告位订单
 
 请求类型：GET
 
@@ -1062,9 +1306,9 @@ s - salt 16 进制
 
 ```
 
-#### 4. 其他交易
+#### 5. 其他交易
 
-##### 4.1. 转账
+##### 5.1. 转账
 
 请求类型：POST
 
@@ -1110,9 +1354,9 @@ localhost:3000/api/v2/transfer
 }
 ```
 
-#### 5. Auth 相关
+#### 6. Auth 相关
 
-##### 5.1. 签名平台 sign
+##### 6.1. 签名平台 sign
 
 请求类型：GET
 
@@ -1141,7 +1385,7 @@ localhost:3000/api/v2/transfer
 }
 ```
 
-##### 5.2 签名验证 verify
+##### 6.2 签名验证 verify
 
 请求类型：GET
 
@@ -1166,7 +1410,7 @@ localhost:3000/api/v2/transfer
       }
     }
 
-##### 5.3 签名平台 返回二维码 signQR
+##### 6.3 签名平台 返回二维码 signQR
 
 请求类型：GET
 
@@ -1188,7 +1432,7 @@ localhost:3000/api/v2/transfer
 }
 ```
 
-##### 5.4 平台拓展信息协议说明
+##### 6.4 平台拓展信息协议说明
 
 平台属性 extra_data 拓展信息 JSON 对象格式字符串 中
 
@@ -1203,7 +1447,7 @@ localhost:3000/api/v2/transfer
 }
 ```
 
-##### 5.5 平台扫码登录
+##### 6.5 平台扫码登录
 
 App 扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接口 ，发送回用户签名对象
 

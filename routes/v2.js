@@ -54,9 +54,9 @@ router
   // 获取购买者的广告位订单
   .get('/advertising_orders', Advertisement.list_advertising_orders)
 
-// .get ('/profits/post/:post_id',         Profit.by_post)
-// .get ('/profits/poster/:poster_id',     Profit.by_poster)
-// .get ('/profits/platform',              Profit.by_platform)
-// .get ('/profits/score',                 Profit.by_score)
+  .get('/profits/post', Profit.by_post)
+  .get('/profits/poster', Profit.by_poster)
+  .get('/profits/platform', Profit.by_platform)
+  .get('/profits/score', Profit.by_score)
 
 module.exports = router
