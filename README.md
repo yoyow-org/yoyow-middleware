@@ -1,17 +1,17 @@
 # yoyow-middleware
 
-使用YOYOW 中间件是平台接入最简单的方式。主要提供三方面的接口： 账号授权，平台激励和内容上链。 可以采用 Docker 一键部署，获得相应的 API，方便的与 YOYOW 链进行交互。
+使用 YOYOW 中间件是平台接入最简单的方式。主要提供三方面的接口： 账号授权，平台激励和内容上链。 可以采用 Docker 一键部署，获得相应的 API，方便的与 YOYOW 链进行交互。
 
-YOYOW中间件是通过YOYOW node 的API接口与YOYOW网络通讯，为平台服务商提供方便的访问链上数据的接口，保证传统业务代码能在只做尽量少的改动情况下，也能达到上链的要求。具体示意图如下：
+YOYOW 中间件是通过 YOYOW node 的 API 接口与 YOYOW 网络通讯，为平台服务商提供方便的访问链上数据的接口，保证传统业务代码能在只做尽量少的改动情况下，也能达到上链的要求。具体示意图如下：
 ![YOYOW 中间件作用示意图](https://github.com/yoyow-org/yoyow-middleware/blob/master/public/images/architecture.png)
 
-平台的创建操作步骤请参考：[从0开始创建YOYOW平台账户](https://wiki.yoyow.org/zh/latest/others/create_platform.html)
+平台的创建操作步骤请参考：[从 0 开始创建 YOYOW 平台账户](https://wiki.yoyow.org/zh/latest/others/create_platform.html)
 
 ## 部署启动
 
 ### 配置文件说明
 
-配置文件的路径在代码路径下`conf/config.js` 文件中，如果使用docker的方式启动，可以将配置文件映射到容器中`/app/conf`路径下
+配置文件的路径在代码路径下`conf/config.js` 文件中，如果使用 docker 的方式启动，可以将配置文件映射到容器中`/app/conf`路径下
 
 ```javascript
 {
@@ -46,6 +46,7 @@ YOYOW中间件是通过YOYOW node 的API接口与YOYOW网络通讯，为平台�
     wallet_url: "http://demo.yoyow.org:8000/#/authorize-service"
 }
 ```
+
 需要注意的是：
 
 1. 在一般使用场景中，中间件值最多需要动用零钱私钥和备注私钥，只配置零钱私钥和备注私钥可以满足大部分需求。除非你确定需要使用资金私钥，否则不要将资金私钥写进配置文件。
@@ -61,14 +62,14 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
 ### 手动部署
 
 1. clone 源码
-    `git clone https://github.com/yoyow-org/yoyow-middleware.git`
-2. 修改中间件配置 
-    参照配置文件说明()，修改文件`yoyow-middleware/conf/config.js`
-3. 安装中间件服务所需node库
-    进入 `~/yoyow-middleware/` 目录
-    `npm install`
+   `git clone https://github.com/yoyow-org/yoyow-middleware.git`
+2. 修改中间件配置
+   参照配置文件说明()，修改文件`yoyow-middleware/conf/config.js`
+3. 安装中间件服务所需 node 库
+   进入 `~/yoyow-middleware/` 目录
+   `npm install`
 4. 启动中间件服务
-    `npm start`
+   `npm start`
 
 启动正常情况如下图
 ![启动正常情况如图](https://github.com/yoyow-org/yoyow-middleware/blob/master/public/images/step4.png)
@@ -81,21 +82,22 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
 
 ##### 1.1. 获取指定账户信息 /accounts
 
-  请求类型：GET
+请求类型：GET
 
-  请求路径：/accounts/:uid
-  
+请求路径：/accounts/:uid
+
     {Number} uid - 账号id
 
-  请求参数：
+请求参数：
 
     无
 
-  请求示例：
+请求示例：
 
     localhost:3000/api/v2/accounts/30833
 
-  返回结果：
+返回结果：
+
 ```
     {
       code: 操作结果,
@@ -143,23 +145,24 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
 
 ##### 1.2. 获取指定账户近期活动记录 /accounts/:uid/histories
 
-  请求类型：GET
+请求类型：GET
 
-  请求路径：/accounts/:uid/histories
+请求路径：/accounts/:uid/histories
 
     {Number} uid - 账号id
 
-  请求参数：
-    
-    {Number} op_type - 查询op类型 '0' 为 转账op，默认为null 即查询所有OP类型
-    {Number} start 查询开始编号，为0时则从最新记录开始查询，默认为0
-    {Number} limit - 查询长度，最大不可超过100条，默认为10
+请求参数：
 
-  请求示例：
+    {Number} op_type - 查询 op 类型 '0' 为 转账 op，默认为 null 即查询所有 OP 类型
+    {Number} start 查询开始编号，为 0 时则从最新记录开始查询，默认为 0
+    {Number} limit - 查询长度，最大不可超过 100 条，默认为 10
 
-  `localhost:3000/api/v2/accounts/30833/histories?start=0&limit=2&op_type=0`
+请求示例：
 
-  返回结果：
+`localhost:3000/api/v2/accounts/30833/histories?start=0&limit=2&op_type=0`
+
+返回结果：
+
 ```
     {
       code: 操作结果,
@@ -170,20 +173,20 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
 
 ##### 1.3. 查询账户授予平台的权限
 
-  请求类型：GET
+请求类型：GET
 
-  请求路径：/authPermissions
+请求路径：/authPermissions
 
-  请求参数：
+请求参数：
 
     {Number} platform - 平台账户
     {Number} account - 起始查询账户
 
-  请求示例：
+请求示例：
 
     localhost:3000/api/v2/authPermissions?platform=33313&account=31479
 
-  返回结果：
+返回结果：
 
 ```
     {
@@ -191,7 +194,7 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
       message: 返回消息,
       data: [
         {
-            "id": "2.22.0", 
+            "id": "2.22.0",
             "account": 30833, 账号id
             "platform": 33313, 平台id
             "max_limit": 1000000000, 授予平台可使用的最大零钱额度
@@ -205,23 +208,23 @@ docker run -itd --name yoyow-middleware -v <本地配置文件路径>:/app/conf 
 
 ##### 1.4. 获取指定资产信息
 
-  请求类型：GET
+请求类型：GET
 
-  请求路径：/assets/YOYO
+请求路径：/assets/YOYO
 
-  请求参数：
+请求参数：
 
 ```
 {String | Number} search - 资产符号（大写）或 资产id
 ```
 
-  请求示例：
+请求示例：
 
 ```
 http://localhost:3001/api/v2/assets/YOYO
 ```
 
-  返回结果：
+返回结果：
 
 ```
 {
@@ -239,7 +242,7 @@ http://localhost:3001/api/v2/assets/YOYO
       "max_market_fee":"1000000000000000", - 交易手续费最大值
       "issuer_permissions":0, - 资产可用权限
       "flags":0, - 资产权限
-      "whitelist_authorities":[], - 资产白名单管理员清单 
+      "whitelist_authorities":[], - 资产白名单管理员清单
       "blacklist_authorities":[], - 资产黑名单管理员清单
       "whitelist_markets":[], - 交易对白名单
       "blacklist_markets":[], - 交易对黑名单
@@ -261,22 +264,23 @@ http://localhost:3001/api/v2/assets/YOYO
 
 ##### 1.5. 获取块详细信息
 
-  请求类型：GET
+请求类型：GET
 
-  请求路径：/blocks/:block_num
+请求路径：/blocks/:block_num
 
-  请求参数：
+请求参数：
 
-​ {Number} block_num - 块高度（块号）
+```
+​{Number} block_num - 块高度（块号）
+```
 
-  请求示例：
+请求示例：
 
 ```
 http://localhost:3001/api/v2/blocks/100
-
 ```
 
-  返回结果：
+返回结果：
 
 ```
 {
@@ -294,50 +298,55 @@ http://localhost:3001/api/v2/blocks/100
 
 ##### 1.6. 获取块状态（是否不可逆）
 
-  请求类型：GET
+请求类型：GET
 
-  请求路径：/blocks/:block_num/confirmed
+请求路径：/blocks/:block_num/confirmed
 
-  请求参数：
-  
-​ {Number} block_num - 验证的块高度（块号）
+请求参数：
 
-  请求示例：
+```
+​{Number} block_num - 验证的块高度（块号）
+```
+
+请求示例：
+
 ```
 http://localhost:3001/api/v2/blocks/100/confirmed
 ```
 
+返回结果：
 
-  返回结果：
 ```
     {
       code: 操作结果,
       message: 返回消息,
-      data: 此块是否不可退回 
+      data: 此块是否不可退回
     }
 ```
 
-
-#### 
+####
 
 #### 2. 文章相关接口
 
 ##### 2.1. 查询文章
 
-  请求类型：GET
+请求类型：GET
 
-  请求路径：/posts
+请求路径：/posts
 
-  请求参数：
-  ​{Number} platform - 平台账户id
-  ​{Number} poster - 发文账户id
- ​ {Number} post_pid - 文章的pid
+请求参数：
+
+```
+​{Number} platform - 平台账户 id
+​{Number} poster - 发文账户 id
+​{Number} post_pid - 文章的 pid
+```
 
 ```
 localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313
 ```
 
- 返回结果：
+返回结果：
 
 ```
 {
@@ -382,28 +391,27 @@ localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313
 }
 ```
 
-
 ##### 2.2. 简单的发文章接口
 
-  该接口为精简接口，可以满足简单的发文需求
-  只支持发原创文章，文章post_type为0
-  文章的受益权采取默认值，25%受益权归属平台，75%归属作者
-  文章的权限采用默认值，允许评论，允许打分，允许打赏，允许转发，允许出售收益
-  文章的转发价格为空，即实际上不允许转发。
+该接口为精简接口，可以满足简单的发文需求
+只支持发原创文章，文章 post_type 为 0
+文章的受益权采取默认值，25%受益权归属平台，75%归属作者
+文章的权限采用默认值，允许评论，允许打分，允许打赏，允许转发，允许出售收益
+文章的转发价格为空，即实际上不允许转发。
 
-  请求类型：POST
+请求类型：POST
 
-  请求路径：/posts/simple
+请求路径：/posts/simple
 
     {Object} cipher - 请求对象密文对象
-    
+
     {
       ct, - 密文文本 16进制
       iv, - 向量 16进制
       s   - salt 16进制
     }
 
-  请求对象结构:
+请求对象结构:
 
     {Number} platform - 平台账号
     {Number} poster - 发文人账号
@@ -414,13 +422,13 @@ localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313
     {Number} license_lid - License ID
     {Number} time - 操作时间
 
-  请求示例：参照 安全请求验证
+请求示例：参照 安全请求验证
 
 ```
 http://localhost:3001/api/v2/posts/simple
 ```
 
-  返回结果：
+返回结果：
 
 ```
 {
@@ -450,24 +458,21 @@ http://localhost:3001/api/v2/posts/simple
 }
 ```
 
-
-
 ##### 2.3. 发文章
 
+请求类型：POST
 
-  请求类型：POST
-
-  请求路径：/posts/simple
+请求路径：/posts/simple
 
     {Object} cipher - 请求对象密文对象
-    
+
     {
       ct, - 密文文本 16进制
       iv, - 向量 16进制
       s   - salt 16进制
     }
 
-  请求对象结构:
+请求对象结构:
 
     {Number} platform - 平台账号
     {Number} poster - 发文人账号
@@ -481,49 +486,50 @@ http://localhost:3001/api/v2/posts/simple
     {Number} origin_post_pid - 原文章的pid
     {Number} time - 操作时间
 
-  文章扩展属性结构：
-  ```javascript
-  {
-  "post_type": 0,  // 文章类型 0-原创文章， 1- 评论文章（需要指定原文的平台作者和pid信息）， 2- 转发文章（需要指定原文的平台作者和pid信息）
-  // "forward_price": null,  // 设置转发价格，可选项，不填写则实际不会允许转发
-  "receiptors": [[ // 文章受益人列表 最多不超过5个人，可选项，不填写则 25%受益权归属平台，75%归属作者
-      271617537,{
-        "cur_ratio": 2500, // 平台必须占有 25% 的文章受益权
-        "to_buyout": false,
-        "buyout_ratio": 0,
-        "buyout_price": 0,
-        "buyout_expiration": 0
-      }
-    ],[
-      291774116,{
-        "cur_ratio": 6000,  // 作者占有60%的受益权。（作者至少占有25%的文章受益权，其他的可以出售）
-        "to_buyout": true,  // 是否出售受益权
-        "buyout_ratio": 3000, // 出售 30%的受益权
-        "buyout_price": 3000000,  // 出售价格 30 个YOYO（注意精度）
-        "buyout_expiration": 1564999949 // 出售挂单的过期时间，值为时间戳，会转换成utc时间。
-      }
-    ],[
-      337250355,{
-        "cur_ratio": 1500,
-        "to_buyout": false,
-        "buyout_ratio": 0,
-        "buyout_price": 0,
-        "buyout_expiration": 0
-      }
-    ]
-  ],
-  "license_lid": 1,  // license_id 必须指定
-  "permission_flags": 255 // 文章的权限标记值，必须指定，参考官方文档中的相关介绍
+文章扩展属性结构：
+
+```javascript
+{
+"post_type": 0,  // 文章类型 0-原创文章， 1- 评论文章（需要指定原文的平台作者和pid信息）， 2- 转发文章（需要指定原文的平台作者和pid信息）
+// "forward_price": null,  // 设置转发价格，可选项，不填写则实际不会允许转发
+"receiptors": [[ // 文章受益人列表 最多不超过5个人，可选项，不填写则 25%受益权归属平台，75%归属作者
+    271617537,{
+      "cur_ratio": 2500, // 平台必须占有 25% 的文章受益权
+      "to_buyout": false,
+      "buyout_ratio": 0,
+      "buyout_price": 0,
+      "buyout_expiration": 0
+    }
+  ],[
+    291774116,{
+      "cur_ratio": 6000,  // 作者占有60%的受益权。（作者至少占有25%的文章受益权，其他的可以出售）
+      "to_buyout": true,  // 是否出售受益权
+      "buyout_ratio": 3000, // 出售 30%的受益权
+      "buyout_price": 3000000,  // 出售价格 30 个YOYO（注意精度）
+      "buyout_expiration": 1564999949 // 出售挂单的过期时间，值为时间戳，会转换成utc时间。
+    }
+  ],[
+    337250355,{
+      "cur_ratio": 1500,
+      "to_buyout": false,
+      "buyout_ratio": 0,
+      "buyout_price": 0,
+      "buyout_expiration": 0
+    }
+  ]
+],
+"license_lid": 1,  // license_id 必须指定
+"permission_flags": 255 // 文章的权限标记值，必须指定，参考官方文档中的相关介绍
 }
 ```
 
-  请求示例：参照 仓库中 test/examples/create_post_example.js
+请求示例：参照 仓库中 test/examples/create_post_example.js
 
 ```
 http://localhost:3001/api/v2/posts
 ```
 
-  返回结果：
+返回结果：
 
 ```
 {
@@ -557,11 +563,11 @@ http://localhost:3001/api/v2/posts
 
 平台可以使用授权账户的权限，代理账户为文章打分。
 
-  请求类型：POST
+请求类型：POST
 
-  请求路径：/posts/score
+请求路径：/posts/score
 
-  请求参数：
+请求参数：
 
 ```
 {Object} cipher - 请求对象密文对象
@@ -573,7 +579,7 @@ http://localhost:3001/api/v2/posts
 }
 ```
 
-  请求对象结构:
+请求对象结构:
 
 ```
     {Number} from_account - 打分的账户
@@ -585,12 +591,13 @@ http://localhost:3001/api/v2/posts
     {Number} time - 操作时间
 ```
 
-  请求示例：参照 安全请求验证
+请求示例：参照 安全请求验证
+
 ```
 localhost:3000/api/v2/posts/score
 ```
 
-  返回结果：
+返回结果：
 
 ```
 {
@@ -604,18 +611,17 @@ localhost:3000/api/v2/posts/score
 
 ```
 
-
 ##### 2.5. 为文章打赏
 
 平台可以代理普通账户打赏其他文章。
 
 打赏会动用账户的零钱，也会消耗账户授予授予平台的零钱额度
 
-  请求类型：POST
+请求类型：POST
 
-  请求路径：/posts/reward-proxy
+请求路径：/posts/reward-proxy
 
-  请求参数：
+请求参数：
 
 ```
 {Object} cipher - 请求对象密文对象
@@ -627,7 +633,7 @@ localhost:3000/api/v2/posts/score
 }
 ```
 
-  请求对象结构:
+请求对象结构:
 
 ```
     {Number} from_account - 打分的账户
@@ -639,12 +645,13 @@ localhost:3000/api/v2/posts/score
     {Number} time - 操作时间
 ```
 
-  请求示例：参照 安全请求验证
+请求示例：参照 安全请求验证
+
 ```
 localhost:3000/api/v2/posts/reward-proxy
 ```
 
-  返回结果：
+返回结果：
 
 ```
 {
@@ -659,11 +666,12 @@ localhost:3000/api/v2/posts/reward-proxy
 
 ##### 2.6. 获取文章列表
 
-  请求类型：GET
+请求类型：GET
 
-  请求路径：/posts/getPostList
+请求路径：/posts/getPostList
 
-  请求参数：
+请求参数：
+
 ```
 {Number} platform - 平台账号
 {Number} poster -发文者账号（默认null，为null时查询该平台所有文章）
@@ -671,12 +679,11 @@ localhost:3000/api/v2/posts/reward-proxy
 {String} start - 开始时间 'yyyy-MM-ddThh:mm:ss' ISOString （加载下一页时将当前加载出的数据的最后一条的create_time传入，不传则为从头加载）
 ```
 
-
-  请求示例：
+请求示例：
 
     http://localhost:3001/api/v2/posts/getPostList?start=2019-07-11T07:04:37&limit=2&poster=30834
 
-  返回结果：
+返回结果：
 
 ```
 {
@@ -688,11 +695,11 @@ localhost:3000/api/v2/posts/reward-proxy
 
 ##### 2.7 获取某文章的打分列表
 
-  请求类型：GET
+请求类型：GET
 
-  请求路径：/posts/listScores
+请求路径：/posts/listScores
 
-  请求参数：
+请求参数：
 
 ```
 {Number} platform - 平台账号
@@ -703,11 +710,11 @@ localhost:3000/api/v2/posts/reward-proxy
 {Boolean} list_cur_period - 是否只取当前评奖周期的数据，默认为true
 ```
 
-  请求示例：
+请求示例：
 
     http://localhost:3001/api/v2/posts/listScores?platform=33313&poster=30833&pid=2&lower_bound_score=2.16.3&limit=10&list_cur_period=true
 
-  返回结果：
+返回结果：
 
 ```
 {
@@ -730,57 +737,318 @@ localhost:3000/api/v2/posts/reward-proxy
 }
 ```
 
-#### 3. @TODO 广告 相关  
+#### 3. 收益相关
 
-##### 3.1. @TODO 发布广告位
+##### 3.1 获取文章收益详情
 
-  请求类型：POST
+请求类型：GET
 
-  请求路径：/advertising
+请求路径：/profits/post
+
+请求参数：
+
+```
+{Number} begin_period - 起始周期号
+{Number} end_period - 截止周期号
+{Number} platform - 平台账号
+{Number} poster -发文者账号
+{Number} post_pid - 文章id
+```
+
+请求示例：
+
+    http://localhost:3001/api/v2/profits/post?poster=305154832&platform=396291915&pid=143&begin_period=28489&end_period=28499
+
+返回结果：
+
+```
+{
+  {
+    "code": 0,
+    "data": [{
+      "id": "1.11.182",
+      "platform": 396291915,
+      "poster": 305154832,
+      "post_pid": 143,
+      "total_csaf": 100000,
+      "total_rewards": [],
+      "period_sequence": 28497,
+      "positive_win": true,
+      "post_award": 951293,
+      "forward_award": 0,
+      "receiptor_details": [
+        [
+          305154832,
+          {
+            "forward": 0,
+            "post_award": 535102,
+            "rewards": []
+          }
+        ],
+        [
+          396291915,
+          {
+            "forward": 0,
+            "post_award": 178368,
+            "rewards": []
+          }
+        ]
+      ]
+    }],
+    "message": "操作成功"
+  }
+}
+```
+
+##### 3.2 获取文章作者收益详情
+
+请求类型：GET
+
+请求路径：/profits/poster
+
+请求参数：
+
+```
+{Number} begin_period - 起始周期号
+{Number} end_period - 截止周期号
+{Number} poster -发文者账号
+{Number} lower_bound_index - 起始active序号
+{Number} limit - 显示条数
+```
+
+请求示例：
+
+    http://localhost:3001/api/v2/profits/poster?poster=305154832&pid=143&begin_period=28489&end_period=28499&lower_bound_index=0&limit=100
+
+返回结果：
+
+```
+{
+  "code": 0,
+  "data": [{
+    "cur_period": 28490,
+    "poster_account": 305154832,
+    "total_forward": 0,
+    "total_rewards": [],
+    "total_post_award": 481591,
+    "active_objects": [{
+        "id": "1.11.180",
+        "platform": 396291915,
+        "poster": 305154832,
+        "post_pid": 81,
+        "total_csaf": 8000,
+        "total_rewards": [],
+        "period_sequence": 28490,
+        "positive_win": true,
+        "post_award": 475646,
+        "forward_award": 0,
+        "receiptor_details": [
+          [
+            305154832,
+            {
+              "forward": 0,
+              "post_award": 231877,
+              "rewards": []
+            }
+          ],
+          [
+            396291915,
+            {
+              "forward": 0,
+              "post_award": 89185,
+              "rewards": []
+            }
+          ],
+          [
+            509652620,
+            {
+              "forward": 0,
+              "post_award": 35673,
+              "rewards": []
+            }
+          ]
+        ]
+      }
+    ]
+  }],
+  "message": "操作成功"
+}
+```
+
+##### 3.3  获取平台收益详情
+
+请求类型：GET
+
+请求路径：/profits/platform
+
+请求参数：
+
+```
+{Number} begin_period - 起始周期号
+{Number} end_period - 截止周期号
+{Number} platform - 平台账号
+{Number} lower_bound_index - 起始active序号
+{Number} limit - 显示数量
+```
+
+请求示例：
+
+    http://localhost:3001/api/v2/profits/platform?platform=396291915&begin_period=28489&end_period=28499&lower_bound_index=0&limit=100
+
+返回结果：
+
+```
+{
+  "code": 0,
+  "data": [{
+      "cur_period": 28490,
+      "platform_account": 396291915,
+      "platform_name": "币问",
+      "rewards_profits": [],
+      "foward_profits": 0,
+      "post_profits": 178370,
+      "post_profits_by_platform": 178370,
+      "platform_profits": 951293,
+      "active_objects": [{
+          "id": "1.11.180",
+          "platform": 396291915,
+          "poster": 305154832,
+          "post_pid": 81,
+          "total_csaf": 8000,
+          "total_rewards": [],
+          "period_sequence": 28490,
+          "positive_win": true,
+          "post_award": 475646,
+          "forward_award": 0,
+          "receiptor_details": [
+            [
+              305154832,
+              {
+                "forward": 0,
+                "post_award": 231877,
+                "rewards": []
+              }
+            ],
+            [
+              396291915,
+              {
+                "forward": 0,
+                "post_award": 89185,
+                "rewards": []
+              }
+            ],
+            [
+              509652620,
+              {
+                "forward": 0,
+                "post_award": 35673,
+                "rewards": []
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "message": "操作成功"
+}
+```
+
+##### 3.4  获取打分收益
+
+请求类型：GET
+
+请求路径：/profits/score
+
+请求参数：
+
+```
+{Number} account - 投票人id
+{Number} period - 收益分配周期号
+```
+
+请求示例：
+
+    http://localhost:3001/api/v2/profits/score?account=291774116&period=28497
+
+返回结果：
+
+```
+{
+  "code": 0,
+  "data": 237823, // 收益
+  "message": "操作成功"
+}
+```
+
+#### 4. 广告 相关
+
+##### 4.1 发布广告位
+
+请求类型：POST
+
+请求路径：/advertisings
 
     {Object} cipher - 请求对象密文对象
-    
+
     {
       ct, - 密文文本 16进制
       iv, - 向量 16进制
       s   - salt 16进制
     }
 
-  请求对象结构:
+请求对象结构:
 
     {Number} platform - 平台账号
-    {String} platform - 广告位描述
+    {String} description - 广告位描述
     {Number} unit_price - 单位时间价格
     {Number} unit_time - 单位时间
 
-  请求示例：参照 安全请求验证
+请求示例：参照 安全请求验证
 
 ```
-http://localhost:3001/api/v2/advertising
+http://localhost:3001/api/v2/advertisings
 ```
 
-  返回结果：
+返回结果：
 
 ```
-{
+{ code: 0,
+  data: {
+    block_num: 2671695, -交易广播时引用的块号
+    txid: 'eca38133036dfa8a1bbcdfe55b08e01343692f2d', - 交易ID
+    advertising: {
+      platform: 271617537,
+      description: 'VVVVV',
+      unit_price: 100,
+      unit_time: 86400,
+      advertising_aid: 13, -广告id
+      fee: {
+        "total": {
+          "amount": 0,
+          "asset_id": 0
+        }
+      }
+    }
+  },
+  message: '操作成功'
 }
 ```
 
-##### 3.2 @TODO 更新广告位
+##### 4.2 更新广告位
 
-  请求类型：PATCH
+请求类型：POST
 
-  请求路径：/advertising
-  {Object} cipher - 请求对象密文对象
-  
-  {
-    ct, - 密文文本 16进制
-    iv, - 向量 16进制
-    s   - salt 16进制
-  }
+请求路径：/advertising/update
+{Object} cipher - 请求对象密文对象
 
-  请求对象结构:
+{
+ct, - 密文文本 16 进制
+iv, - 向量 16 进制
+s - salt 16 进制
+}
 
+请求对象结构:
 
     {Number} platform - 平台账号
     {String} advertising_aid - 广告id
@@ -789,31 +1057,48 @@ http://localhost:3001/api/v2/advertising
     {Number} unit_time - 单位时间
     {Boolean} on_sell - 出售状态
 
-  请求示例：
+请求示例：
 
-    localhost:3000/api/v2/advertising
+    localhost:3000/api/v2/advertising/update
 
-  返回结果：
+返回结果：
 
 ```
 {
+	code: 0,
+	data: {
+		block_num: 2671971,
+		txid: 'f7e4b1afb19c210035da3e9a71abdf0d0217bac5',
+		advertising: {
+			platform: 271617537,
+			advertising_aid: 3,
+			description: 'CCCCCCC',
+			fee: {
+        "total": {
+          "amount": 0,
+          "asset_id": 0
+        }
+      }
+		}
+	},
+	message: '操作成功'
 }
 ```
 
-##### 3.3 @TODO 购买广告位
+##### 4.3 @TODO 购买广告位
 
-  请求类型：POST
+请求类型：POST
 
-  请求路径：/advertising/buy
-  {Object} cipher - 请求对象密文对象
-  
-  {
-    ct, - 密文文本 16进制
-    iv, - 向量 16进制
-    s   - salt 16进制
-  }
+请求路径：/advertising/buy
+{Object} cipher - 请求对象密文对象
 
-  请求对象结构:
+{
+ct, - 密文文本 16 进制
+iv, - 向量 16 进制
+s - salt 16 进制
+}
+
+请求对象结构:
 
     {Number} account - 账户的id或名字
     {Number} platform - 平台账号
@@ -823,146 +1108,216 @@ http://localhost:3001/api/v2/advertising
     {String} extra_data - 额外信息
     {String} memo - 备注信息
 
-  请求示例：
+请求示例：
 
     localhost:3000/api/v2/advertising/buy
 
-  返回结果：
+返回结果：
 
 ```
 {
+  code: 0,
+  data: {
+    block_num: 2672816,
+    txid: 'bf15ce8d17fd411088f31a8c3f15e6f7ca6525c9',
+    advertising: {
+      platform: 271617537,
+      advertising_aid: 3,
+      advertising_order_oid: 3,
+      isconfirm: true,
+      fee: {
+        "total": {
+          "amount": 0,
+          "asset_id": 0
+        }
+      }
+    }
+  },
+  message: '操作成功'
 }
 ```
 
-##### 3.4 @TODO 确认广告位订单
+##### 4.4 确认广告位订单
 
-  请求类型：POST
+请求类型：POST
 
-  请求路径：/advertising/confirm
-  {Object} cipher - 请求对象密文对象
-  
-  {
-    ct, - 密文文本 16进制
-    iv, - 向量 16进制
-    s   - salt 16进制
-  }
+请求路径：/advertising/confirm
 
-  请求对象结构:
+{Object} cipher - 请求对象密文对象
+
+{
+ct, - 密文文本 16 进制
+iv, - 向量 16 进制
+s - salt 16 进制
+}
+
+请求对象结构:
 
     {Number} platform - 平台账号
     {String} advertising_aid - 广告id
-    {Number} advertising_order_oid - 广告位订单的id 
-    {Boolean} confirm - 确认或拒绝广告位订单
+    {Number} advertising_order_oid - 广告位订单的id
+    {Boolean} isconfirm - 确认或拒绝广告位订单
 
-  请求示例：
+请求示例：
 
     localhost:3000/api/v2/advertising/confirm
 
-  返回结果：
+返回结果：
 
 ```
 {
+  code: 0,
+  data: {
+    block_num: 2672816,
+    txid: 'bf15ce8d17fd411088f31a8c3f15e6f7ca6525c9',
+    advertising: {
+      platform: 271617537,
+      advertising_aid: 3,
+      advertising_order_oid: 3,
+      isconfirm: true,
+      fee: {
+        "total": {
+          "amount": 0,
+          "asset_id": 0
+        }
+      }
+    }
+  },
+  message: '操作成功'
 }
 ```
 
-##### 3.5 @TODO 赎回广告位订单
+##### 4.5 @TODO 赎回广告位订单
 
-  请求类型：POST
+请求类型：POST
 
-  请求路径：/advertising/ransom
-  {Object} cipher - 请求对象密文对象
-  
-  {
-    ct, - 密文文本 16进制
-    iv, - 向量 16进制
-    s   - salt 16进制
-  }
+请求路径：/advertising/ransom
+{Object} cipher - 请求对象密文对象
 
-  请求对象结构:
+{
+ct, - 密文文本 16 进制
+iv, - 向量 16 进制
+s - salt 16 进制
+}
+
+请求对象结构:
 
     {Number} from_account - 用户的id或名字
     {Number} platform - 平台账号
     {String} advertising_aid - 广告id
-    {Number} advertising_order_oid - 广告位订单的id 
+    {Number} advertising_order_oid - 广告位订单的id
 
-  请求示例：
+请求示例：
 
     localhost:3000/api/v2/advertising/ransom
 
-  返回结果：
+返回结果：
 
 ```
 {
 }
 ```
 
-##### 3.6 @TODO 赎回广告位订单
+##### 4.6 获取平台广告列表
 
-  请求类型：POST
+请求类型：GET
 
-  请求路径：/advertising/ransom
-  {Object} cipher - 请求对象密文对象
-  
-  {
-    ct, - 密文文本 16进制
-    iv, - 向量 16进制
-    s   - salt 16进制
-  }
+请求路径：/advertisings
 
-  请求对象结构:
+请求对象结构:
 
-    {Number} from_account - 用户的id或名字
     {Number} platform - 平台账号
-    {String} advertising_aid - 广告id
-    {Number} advertising_order_oid - 广告位订单的id 
+    {Number} lower_bound_advertising - 起始广告位id
+    {Number} limit - 长度
 
-  请求示例：
+请求示例：
 
-    localhost:3000/api/v2/advertising/ransom
+    localhost:3000/api/v2/advertisings?platform=xxx&lower_bound_advertising=0&limit=100
 
-  返回结果：
-
-```
-{
-}
-```
-
-##### 3.7 @TODO 查询账户授予平台的权限
-
-  请求类型：GET
-
-  请求路径：/advertising
-
-  请求参数：
-
-    {Number} platform - 平台账户
-    {String} lower_bound_advertising - 起始广告的id
-    {Number} limit - 返回结果数
- 
-  请求示例：
-
-    localhost:3000/api/v2/advertising?platform=33136&lower_bound_advertising=0.0.0&limit=100
-
-  返回结果：
+返回结果：
 
 ```
 {
+  "code": 0,
+  "data": [{
+    "id": "2.18.0",
+    "advertising_aid": 1,
+    "platform": 271617537,
+    "on_sell": true,
+    "unit_time": 86400,
+    "unit_price": 5000000,
+    "description": "update_first_ad",
+    "last_order_sequence": 2,
+    "publish_time": "2019-10-12T03:52:12",
+    "last_update_time": "2019-10-12T03:53:21"
+  }],
+  "message": "操作成功"
 }
 ```
 
+##### 4.7 获取广告位订单
 
-#### 4. 其他交易
+请求类型：GET
 
-##### 4.1. 转账
+请求路径：/advertising_orders
 
-  请求类型：POST
+请求对象结构:
 
-  请求路径：/transfer
+    {Number} filter - 0代表根据购买方id查询 1代表根据平台和广告id查询
+    {Number} purchaser - 购买方id（filter为0时必传）
+    {Number} platform - 平台账号（filter为1时必传）
+    {Number} advertising_aid_type - 广告位id（filter为1时必传）
+    {Number} lower_bound_advertising_order - 起始广告位id
+    {Number} limit - 长度
 
-  请求参数：
+请求示例：
+
+    localhost:3000/api/v2/advertising_orders?filter=0&purchaser=xxx&lower_bound_advertising_order=0&limit=100
+
+    localhost:3000/api/v2/advertising_orders?filter=1&platform=xxx&advertising_aid_type=1&lower_bound_advertiing_order=0&limit=100
+
+返回结果：
 
 ```
- {Object} cipher - 请求的密文对象，格式如下
+{
+  "code": 0,
+  "data": [{
+    "id": "2.19.0",
+    "advertising_order_oid": 1,
+    "platform": 271617537,
+    "advertising_aid": 1,
+    "user": 291774116,
+    "released_balance": 5000000,
+    "start_time": "2019-10-12T04:21:40",
+    "end_time": "2019-10-13T04:21:40",
+    "buy_request_time": "2019-10-12T04:20:57",
+    "status": "advertising_accepted",
+    "handle_time": "2019-10-12T04:21:36",
+    "memo": {
+      "from": "YYW6x1HQBQEuUB1JXx1X6WstGWgLJu5Krg46SqJguRPpnEMTV39tp",
+      "to": "YYW7Jajj5qMSZVeWj4swUUvgKrU5pkHSg9iCUFCQ4iSDuoE87ucoT",
+      "nonce": "2307413863269517774",
+      "message": "3e81b5ded1220586803423ec546bea13"
+    },
+    "extra_data": "extramessage"
+  }],
+  "message": "操作成功"
+}
+
+```
+
+#### 5. 其他交易
+
+##### 5.1. 转账
+
+请求类型：POST
+
+请求路径：/transfer
+
+请求参数：
+
+```
+{Object} cipher - 请求的密文对象，格式如下
 {
   ct, - 密文文本 16进制
   iv, - 向量 16进制
@@ -971,20 +1326,22 @@ http://localhost:3001/api/v2/advertising
 ```
 
 请求对象结构:
+
 ```
 {Number} uid - 指定用户id
 {Number} amount - 转出金额
-{Number} asset_id - 资产id 
+{Number} asset_id - 资产id
 {string} memo - 备注
 {Number} time - 操作时间
 ```
+
 请求示例：参照 安全请求验证
 
 ```
 localhost:3000/api/v2/transfer
 ```
 
- 返回结果：
+返回结果：
 
 ```
 {
@@ -997,20 +1354,23 @@ localhost:3000/api/v2/transfer
 }
 ```
 
+#### 6. Auth 相关
 
-#### 5. Auth 相关
+##### 6.1. 签名平台 sign
 
-##### 5.1. 签名平台 sign
+请求类型：GET
 
-  请求类型：GET
+请求参数：
 
-  请求参数：无
+```
+无
+```
 
-  请求示例：
+请求示例：
 
     localhost:3000/auth/sign
 
-  返回结果：
+返回结果：
 
 ```
 {
@@ -1025,21 +1385,21 @@ localhost:3000/api/v2/transfer
 }
 ```
 
-##### 5.2 签名验证 verify
+##### 6.2 签名验证 verify
 
-  请求类型：GET
+请求类型：GET
 
-  请求参数：
+请求参数：
 
     {Number} yoyow - 账号id
     {Number} time - 操作时间毫秒值
     {String} sign - 签名结果
 
-  请求示例：
+请求示例：
 
     localhost:3000/auth/verify?sign=20724e65c0d763a0cc99436ab79b95c02fbb3f352e3f9f749716b6dac84c1dc27e5e34ff8f0499ba7d94f1d14098c6a60f21f2a24a1597791d8f7dda47559c39a0&time=1517534429858&yoyow=217895094
 
-  返回结果：
+返回结果：
 
     {
       code: 操作结果,
@@ -1050,19 +1410,20 @@ localhost:3000/api/v2/transfer
       }
     }
 
-##### 5.3 签名平台 返回二维码 signQR
+##### 6.3 签名平台 返回二维码 signQR
 
-  请求类型：GET
+请求类型：GET
 
-  请求参数：
+请求参数：
 
     {String} state - 拓展信息，将在调用平台登录接口时与用户签名信息一同发送到平台，用于平台登陆接口需要自定义的参数时使用，若无此需求可不传
 
-  请求示例：
+请求示例：
 
     localhost:3000/auth/signQR?state=platformCustomParams
 
-  返回结果：
+返回结果：
+
 ```
 {
   code: 操作结果,
@@ -1071,9 +1432,10 @@ localhost:3000/api/v2/transfer
 }
 ```
 
-##### 5.4 平台拓展信息协议说明
+##### 6.4 平台拓展信息协议说明
 
-平台属性 extra_data 拓展信息 JSON对象格式字符串 中
+平台属性 extra_data 拓展信息 JSON 对象格式字符串 中
+
 ```javascript
 {
     "login":"http://example/login" //平台扫码登录请求接口
@@ -1085,9 +1447,9 @@ localhost:3000/api/v2/transfer
 }
 ```
 
-##### 5.5 平台扫码登录
+##### 6.5 平台扫码登录
 
-App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接口 ，发送回用户签名对象
+App 扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接口 ，发送回用户签名对象
 
 ```
 {
@@ -1099,6 +1461,7 @@ App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接
 ```
 
 约定 平台提供的接口必须返回以下信息
+
 ```
 {
   {Number} code - 操作结果 0 为通过 任何非 0 情况视为错误处理
@@ -1150,41 +1513,42 @@ App扫码授权登录将访问 平台拓展信息的 平台扫码登录请求接
 
 ### 安全请求验证
 
-涉及到资金安全相关的操作，比如转账，发文等各种写操作，会在中间件服务中验证其有效性。这类请求的信息需要先通过加密操作转换成密文，再发送给中间件服务。加密方式采用对称加密AES，密钥为配置文件中的`secure_key`。
+涉及到资金安全相关的操作，比如转账，发文等各种写操作，会在中间件服务中验证其有效性。这类请求的信息需要先通过加密操作转换成密文，再发送给中间件服务。加密方式采用对称加密 AES，密钥为配置文件中的`secure_key`。
 
-
-
-加密示例(javascript的 crypto-js 版，其他语言使用类似的AES加密方式)
+加密示例(javascript 的 crypto-js 版，其他语言使用类似的 AES 加密方式)
 
 默认 mode CBC , padding scheme Pkcs7
 
-例如：transfer操作
+例如：transfer 操作
+
 ```javascript
-    let key = 'customkey123456'; // 此key与中间件中的config 里 secure_key相同
+let key = 'customkey123456' // 此key与中间件中的config 里 secure_key相同
 
-    let sendObj = {
-      "uid": 9638251,
-      "amount": 100,
-      "memo": "hello yoyow",
-      "time": Date.now()  //time 字段 操作时间取当前时间毫秒值 加密操作须带有此字段 用于验证操作时效
-    }
+let sendObj = {
+  uid: 9638251,
+  amount: 100,
+  memo: 'hello yoyow',
+  time: Date.now() //time 字段 操作时间取当前时间毫秒值 加密操作须带有此字段 用于验证操作时效
+}
 
-    let cipher = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key);
-    
-    $.ajax({
-      url: 'localhost:3000/api/v2/transfer',
-      type: 'POST',
-      data: {
-        ct: cipher.ciphertext.toString(CryptoJS.enc.Hex),
-        iv: cipher.iv.toString(),
-        s: cipher.salt.toString()
-      },
-      success: function(res){
-        // do something ...
-      }
-    })
+let cipher = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key)
+
+$.ajax({
+  url: 'localhost:3000/api/v2/transfer',
+  type: 'POST',
+  data: {
+    ct: cipher.ciphertext.toString(CryptoJS.enc.Hex),
+    iv: cipher.iv.toString(),
+    s: cipher.salt.toString()
+  },
+  success: function(res) {
+    // do something ...
+  }
+})
 ```
-PHP加密方式
+
+PHP 加密方式
+
 ```php
     function cryptoJsAesEncrypt($passphrase, $value){
       $salt = openssl_random_pseudo_bytes(8);
@@ -1202,6 +1566,4 @@ PHP加密方式
     }
 ```
 
-
-其他需要安全请求验证的操作根据文档改动sendObj
-
+其他需要安全请求验证的操作根据文档改动 sendObj
