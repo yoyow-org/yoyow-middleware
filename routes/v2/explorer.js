@@ -10,7 +10,7 @@ export default {
   get_post_histories: (req, res) => {
     api.getPostHistories(req.query)
       .then(result => {
-        utils.success(res, result)
+        res.json(JSON.parse(result))
       })
       .catch(e => {
         utils.error(res, errorUtils.formatError(e))
@@ -23,7 +23,7 @@ export default {
   get_score_histories: (req, res) => {
     api.getScoreHistories(req.query)
       .then(result => {
-        utils.success(res, result)
+        res.json(JSON.parse(result))
       })
       .catch(e => {
         utils.error(res, errorUtils.formatError(e))
