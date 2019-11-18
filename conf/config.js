@@ -12,7 +12,7 @@ module.exports = {
   // 平台所有者备注私钥
   memo_key: '5K8zY2ZpFtHC8STGbMFLUe33oJnsPe7LxYgt1qkDMZFebetF8CQ',
   // 平台id(yoyow id)
-  platform_id: 271617537, // platform1
+  platform_id: "271617537", // platform1
   // 转账是否使用积分
   use_csaf: true,
   // 转账是否转到余额 否则转到零钱
