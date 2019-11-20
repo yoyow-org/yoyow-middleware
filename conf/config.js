@@ -20,5 +20,5 @@ module.exports = {
   // 钱包授权页URL
   wallet_url: 'http://demo.yoyow.org:8000/#/authorize-service',
   // 浏览器api
-  explorer_url: 'https://explorer.yoyow.org/api/v1'
+  explorer_url: 'https://testnet.explorer.yoyow.org/api/v1'
 }

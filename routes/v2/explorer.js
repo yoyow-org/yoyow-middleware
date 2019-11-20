@@ -1,6 +1,7 @@
 // 浏览器api
 import api from '../../lib/explorerApi'
 import utils from '../../lib/utils'
+import errorUtils from '../../lib/ErrorUtils'
 
 export default {
   // platform
@@ -13,7 +14,9 @@ export default {
         res.json(JSON.parse(result))
       })
       .catch(e => {
-        utils.error(res, errorUtils.formatError(e))
+        utils.error(res, errorUtils.formatError({
+          message: e
+        }))
       })
   },
   // platform
@@ -26,7 +29,10 @@ export default {
         res.json(JSON.parse(result))
       })
       .catch(e => {
-        utils.error(res, errorUtils.formatError(e))
+        utils.error(res, errorUtils.formatError({
+          message: e
+        }))
       })
-  }
+  },
+
 }
