@@ -16,7 +16,7 @@ The path to the configuration file is in the `conf/config.js` file in the code p
 
 ```javascript
 {
-    // The api server address, the Testnet public api address are as follows. For the official network deployment, please change the address. For example, the official network public api address：wss://api-bj.yoyow.org/ws
+    // The api server address, the Testnet public api address are as follows. For the official mainnet deployment, please change the address as mainnet api address. For example, the official mainnet public api address：wss://api-bj.yoyow.org/ws
     apiServer: "wss://api.testnet.yoyow.org",
 
     // The validity time of the security request, in unit "s", if the requested content exceeds the validity period, it will return "The request 1003 has expired".
@@ -43,7 +43,7 @@ The path to the configuration file is in the `conf/config.js` file in the code p
     // Whether transfer to the balance, otherwise it is transferred to tippings
     to_balance: false,
 
-    // Wallet authorization page URL, Testnet address are as follows, official network address“https://wallet.yoyow.org/#/authorize-service”
+    // Wallet authorization page URL, Testnet address are as follows,mainnet address“https://wallet.yoyow.org/#/authorize-service”
     wallet_url: "http://demo.yoyow.org:8000/#/authorize-service"
 }
 ```
@@ -82,21 +82,21 @@ Start normal state as shown below
 
 ##### 1.1. Get the specified account information /accounts
 
-  Request type：GET
+  Request type：GET
 
   Request path：/accounts/:uid
   
     {Number} uid - account id
 
-  Request parameter：
+  Request parameter：
 
     Null
 
-  Request example：
+  Request example：
 
     localhost:3000/api/v2/accounts/30833
 
-  Returned result：
+  Returned result：
 ```
     {
       code: operation result,
@@ -144,23 +144,23 @@ Start normal state as shown below
 
 ##### 1.2. Get the recent activity history of the specified account /accounts/:uid/histories
 
-  Request type：GET
+  Request type：GET
 
   Request path：/accounts/:uid/histories
 
     {Number} uid - account id
 
-  Request parameters：
+  Request parameters：
     
     {Number} op_type - Query op type, '0' for transfer op, default is null, query all OP types
     {Number} start - Query start number. When it is 0, the query starts from the latest record. The default is 0.
     {Number} limit - Query the length. The length of the query cannot exceed 100. The default is 10.
 
-  Request example：
+  Request example：
 
   `localhost:3000/api/v2/accounts/30833/histories?start=0&limit=2&op_type=0`
 
-  Returned results：
+  Returned results：
 ```
     {
       code: operation result,
@@ -171,20 +171,20 @@ Start normal state as shown below
 
 ##### 1.3. Query the permissions granted to the platform by the account
 
-  Request type：GET
+  Request type：GET
 
   Request path：/authPermissions
 
-  Request parameters：
+  Request parameters：
 
     {Number} platform - platform accounts
     {Number} account - initial query account
 
-  Requst example：
+  Requst example：
 
     localhost:3000/api/v2/authPermissions?platform=33313&account=31479
 
-  Returned results：
+  Returned results：
 
 ```
     {
@@ -306,7 +306,7 @@ http://localhost:3001/api/v2/blocks/100/confirmed
 ```
 
 
-  Returned results：
+  Returned results：
 ```
     {
       code: operation results,
@@ -320,11 +320,11 @@ http://localhost:3001/api/v2/blocks/100/confirmed
 
 #### 2. Post related APIs
 ##### 2.1. Query posts
-  Request type：GET
+  Request type：GET
 
   Request path：/posts
 
-  Request parameters：
+  Request parameters：
   ​{Number} platform - platform account id
   ​{Number} poster - Poster account id
  ​ {Number} post_pid - post pid
@@ -378,15 +378,19 @@ localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313
 }
 ```
 
+##### 2.2. Simple Posting Interface
 
+The interface is a simple interface that can meet simple posting requirements.
+Only support original posts, post_type is 0
+The benefit of the post takes the default value, 25% of the benefits belong to the platform, and 75% belong to the author.
+The permissions of the post take default values, allowing for comments, rating, rewards, repost and revenue sales.
+The reposting price of the article is empty, which means that reposting is not allowed.
 
-##### 2.2. Posting
+Request type：POST
 
-  Request type：POST
+ Request path：/posts/simple
 
-  Request path：/posts
-
-    {Object} cipher - Request object ciphertext object
+ {Object} cipher - Request object ciphertext object
     
     {
       ct, - Ciphertext hexadecimal
@@ -396,24 +400,22 @@ localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313
 
   Request object structure:
 
-    {Number} platform - platform account
+{Number} platform - platform account
     {Number} poster - poster account
     {String} title - post title
     {String} body - post content
     {String} url - The link to the original text of the post (which will be presented in the extra_data of the post on the chain)
     {String} hash_value - Hash value, if this parameter is not provided, the sha256 value of the body content is used by default.
-    {Number} origin_platform - original post platform account（default null）
-    {Number} origin_poster - original post poster account（default null）
-    {Number} origin_post_pid - original post number（默认 null）
+    {Number} license_lid - License ID
     {Number} time - operation time
 
   Request example：Refer to security request verification
 
 ```
-http://localhost:3001/api/v2/posts
+http://localhost:3001/api/v2/posts/simple
 ```
 
-  Returned results：
+  Returned results：
 
 ```
 {
@@ -443,15 +445,116 @@ http://localhost:3001/api/v2/posts
 }
 ```
 
-##### 2.3. Rate the post
+##### 2.3.Posting
+
+Request type：POST
+
+  Request path：/posts/simple
+
+    {Object} cipher - Request object ciphertext object
+    
+    {
+      ct, - Ciphertext hexadecimal
+      iv, - Vector hexadecimal
+      s   - salt hexadecimal
+    }
+
+  Request object structure:
+   
+    {Number} platform - platform account
+    {Number} poster - poster account
+    {String} title - post title
+    {String} body - post content
+    {String} url - The link to the original text of the post (which will be presented in the extra_data of the post on the chain)
+    {String} hash_value - Hash value, if this parameter is not provided, the sha256 value of the body content is used by default.
+    {Object} extensions - extension attributes of the article, see below
+    {Number} origin_platform -  original post platform id
+    {Number} origin_poster - original post poster id
+    {Number} origin_post_pid - original post pid
+    {Number} time - operation time
+
+post extension attribute structure：
+
+```javascript
+{
+"post_type": 0,  // post type 0-original post， 1- rate articiles (need to specify the platform author and pid information of original posts）， 2- repost articles（need to specify the platform author and pid information of original posts）
+// "forward_price": null,  // Set reposting price, optional, if not filling in, it will not actually allow reposting
+"receiptors": [[ // List of reward receiptors of the article Up to 5 people, optional, 25% of the rewards is given to the platform, 75% to the authors
+    271617537,{
+      "cur_ratio": 2500, // The platform must have 25% of the article's revenues.
+      "to_buyout": false,
+      "buyout_ratio": 0,
+      "buyout_price": 0,
+      "buyout_expiration": 0
+    }
+  ],[
+    291774116,{
+      "cur_ratio": 6000,  // The author has 60% of the revenues. (The author has at least 25% of the article's revenues, the rest can be sold)
+      "to_buyout": true,  // Whether to sell the beneficiary rights
+      "buyout_ratio": 3000, // sell 30% of the beneficiary rights
+      "buyout_price": 3000000,  // Sale price 30 YOYO (pay attention to accuracy)
+      "buyout_expiration": 1564999949 // The expiration time value of the buyout order is the timestamp and will be converted to utc time.
+    }
+  ],[
+    337250355,{
+      "cur_ratio": 1500,
+      "to_buyout": false,
+      "buyout_ratio": 0,
+      "buyout_price": 0,
+      "buyout_expiration": 0
+    }
+  ]
+],
+"license_lid": 1,  // license_id must be specified
+"permission_flags": 255 // The permission value of the article must be specified. Refer to the relevant introduction in the official documentation.
+}
+```
+
+Request example：Refer to test/examples/create_post_example.js in repository
+
+```
+http://localhost:3001/api/v2/posts
+```
+
+Returned results：
+
+```
+{
+  "block_num": 858010, - quoted block number in transaction broadcast
+  "txid": "10fdf2976789fb876c0ca7417abd74a6eecd8564", - transaction id
+  "post": { - post details
+      "platform": "33313",
+      "poster": "30833",
+      "post_pid": 6,
+      "hash_value": "79f0f1c9f5d2cb0762407dc77b92626bb970c14288c7e789552c7e840bf94b0f",
+      "extra_data": "{\"url\":\"https://www.biask.com/\"}",
+      "title": "title:YOYOW Released the Mainnet 2.0 Source Code",
+      "body": "",
+      "extensions": {
+          "post_type": 0,
+          "license_lid": "1",
+          "permission_flags": 255,
+          "sign_platform": "33313"
+      },
+      "fee": {
+          "total": {
+              "amount": 0,
+              "asset_id": 0
+          }
+      }
+  }
+}
+```
+
+##### 2.4. Rating the post
 
 The platform can use the permissions of the authorized account to rate the posts for the users.
 
-  Request type：POST
+Request type：POST
 
-  Request path：/posts/score
+Request path：/posts/score
 
-  Request parameters：
+Request parameters：
 
 ```
 {Object} cipher - Request object ciphertext object
@@ -463,24 +566,25 @@ The platform can use the permissions of the authorized account to rate the posts
 }
 ```
 
-  Request object structure:
+Request object structure:
 
 ```
     {Number} from_account - rater account
     {Number} platform - platform account
     {Number} poster - poster account
     {String} pid - post pid
-    {Number} score - rate points, the range is [-5, 5]
+    {Number} score - rating points, the range is [-5, 5]
     {Number} csaf - number of points used for rating
     {Number} time - operation time
 ```
 
-  Request example: refer to security request verification
+Request example: refer to security request verification
+
 ```
 localhost:3000/api/v2/posts/score
 ```
 
-  Returned results：
+Returned results：
 
 ```
 {
@@ -494,17 +598,18 @@ localhost:3000/api/v2/posts/score
 
 ```
 
+##### 2.5. Rewarding posts
 
-##### 2.3. Rewarding posts
 The platform can represent common accounts to reward other posts.
 
 The tippings of the account will be used for rewarding and it will also consume the amount of the tippings of the authorized platform.
 
-  Request type：POST
+Request type：POST
 
-  Request path：/posts/reward-proxy
+Request path：/posts/reward-proxy
 
-  Request parameters：
+
+Request parameters：
 
 ```
 {Object} cipher - Request object ciphertext object
@@ -516,7 +621,7 @@ The tippings of the account will be used for rewarding and it will also consume 
 }
 ```
 
-  Request object structure:
+Request object structure:
 
 ```
     {Number} from_account - rater account
@@ -528,12 +633,12 @@ The tippings of the account will be used for rewarding and it will also consume 
     {Number} time - operation time
 ```
 
-  Request example: refer to security request verification
+Request example: refer to security request verification
 ```
 localhost:3000/api/v2/posts/reward-proxy
 ```
 
-  Returned results：
+Returned results：
 
 ```
 {
@@ -546,13 +651,14 @@ localhost:3000/api/v2/posts/reward-proxy
 }
 ```
 
-##### 2.4. Get post list
+##### 2.6. Get post list
 
-  Request type：GET
 
-  Request path：/posts/getPostList
+Request type：GET
 
-  Request parameters：
+Request path：/posts/getPostList
+
+Request parameters：
 ```
 {Number} platform - platform account
 {Number} poster -poster account（default is null，query all posts of the platform when it is null）
@@ -561,11 +667,11 @@ localhost:3000/api/v2/posts/reward-proxy
 ```
 
 
-  Request example：
+Request example：
 
     http://localhost:3001/api/v2/posts/getPostList?start=2019-07-11T07:04:37&limit=2&poster=30834
 
-  Returned results：
+Returned results：
 
 ```
 {
@@ -575,12 +681,13 @@ localhost:3000/api/v2/posts/reward-proxy
 }
 ```
 
-##### 2.5 Get the rating list for a post
-  Request type：GET
+##### 2.7 Get the rating list for a post
 
-  Request path：/posts/listScores
+Request type：GET
 
-  Request parameters：
+Request path：/posts/listScores
+
+Request parameters：
 
 ```
 {Number} platform - platform account
@@ -591,11 +698,11 @@ localhost:3000/api/v2/posts/reward-proxy
 {Boolean} list_cur_period - Whether to take only the data of the current reward cycle, the default is true
 ```
 
-  Request example：
+Request example：
 
     http://localhost:3001/api/v2/posts/listScores?platform=33313&poster=30833&pid=2&lower_bound_score=2.16.3&limit=10&list_cur_period=true
 
-  Returned results：
+Returned results：
 
 ```
 {
@@ -618,12 +725,257 @@ localhost:3000/api/v2/posts/reward-proxy
 }
 ```
 
-#### 3. @TODO  Advertising Related APIs
+#### 3. About Revenues
 
-##### 3.1. @TODO Publishing an ad slot
-  Request type：POST
+##### 3.1 Get post revenue details
 
-  Request path：/advertising
+Request type：GET
+
+Request path：/profits/post
+
+Request parameters：
+
+```
+{Number} begin_period - start period number
+{Number} end_period - end period number
+{Number} platform - platform account
+{Number} poster -poster account
+{Number} post_pid - post id
+```
+
+Request example：
+
+    http://localhost:3001/api/v2/profits/post?poster=305154832&platform=396291915&pid=143&begin_period=28489&end_period=28499
+
+Returned result：
+
+```
+{
+  {
+    "code": 0,
+    "data": [{
+      "id": "1.11.182",
+      "platform": 396291915,
+      "poster": 305154832,
+      "post_pid": 143,
+      "total_csaf": 100000,
+      "total_rewards": [],
+      "period_sequence": 28497,
+      "positive_win": true,
+      "post_award": 951293,
+      "forward_award": 0,
+      "receiptor_details": [
+        [
+          305154832,
+          {
+            "forward": 0,
+            "post_award": 535102,
+            "rewards": []
+          }
+        ],
+        [
+          396291915,
+          {
+            "forward": 0,
+            "post_award": 178368,
+            "rewards": []
+          }
+        ]
+      ]
+    }],
+    "message": "successful operation"
+  }
+}
+```
+
+##### 3.2 Get article author revenue details
+
+Request type：：GET
+
+Request path：/profits/poster
+
+Request parameters：
+
+```
+{Number} begin_period - start period number
+{Number} end_period - end period number
+{Number} poster - poster account
+{Number} lower_bound_index - starting active number
+{Number} limit - number of displays
+```
+
+Request example:
+
+    http://localhost:3001/api/v2/profits/poster?poster=305154832&pid=143&begin_period=28489&end_period=28499&lower_bound_index=0&limit=100
+
+Returned results：
+
+```
+{
+  "code": 0,
+  "data": [{
+    "cur_period": 28490,
+    "poster_account": 305154832,
+    "total_forward": 0,
+    "total_rewards": [],
+    "total_post_award": 481591,
+    "active_objects": [{
+        "id": "1.11.180",
+        "platform": 396291915,
+        "poster": 305154832,
+        "post_pid": 81,
+        "total_csaf": 8000,
+        "total_rewards": [],
+        "period_sequence": 28490,
+        "positive_win": true,
+        "post_award": 475646,
+        "forward_award": 0,
+        "receiptor_details": [
+          [
+            305154832,
+            {
+              "forward": 0,
+              "post_award": 231877,
+              "rewards": []
+            }
+          ],
+          [
+            396291915,
+            {
+              "forward": 0,
+              "post_award": 89185,
+              "rewards": []
+            }
+          ],
+          [
+            509652620,
+            {
+              "forward": 0,
+              "post_award": 35673,
+              "rewards": []
+            }
+          ]
+        ]
+      }
+    ]
+  }],
+  "message": "successful operation"
+}
+```
+
+##### 3.3  Get platform revenue details
+
+Request type：GET
+
+Request path：/profits/platform
+
+Request parameters：
+
+```
+{Number} begin_period - begin period number
+{Number} end_period - end period number
+{Number} platform - platform account
+{Number} lower_bound_index - starting active number
+{Number} limit - number of displays
+```
+
+Request example：
+
+    http://localhost:3001/api/v2/profits/platform?platform=396291915&begin_period=28489&end_period=28499&lower_bound_index=0&limit=100
+
+Returned results：
+
+```
+{
+  "code": 0,
+  "data": [{
+      "cur_period": 28490,
+      "platform_account": 396291915,
+      "platform_name": "币问",
+      "rewards_profits": [],
+      "foward_profits": 0,
+      "post_profits": 178370,
+      "post_profits_by_platform": 178370,
+      "platform_profits": 951293,
+      "active_objects": [{
+          "id": "1.11.180",
+          "platform": 396291915,
+          "poster": 305154832,
+          "post_pid": 81,
+          "total_csaf": 8000,
+          "total_rewards": [],
+          "period_sequence": 28490,
+          "positive_win": true,
+          "post_award": 475646,
+          "forward_award": 0,
+          "receiptor_details": [
+            [
+              305154832,
+              {
+                "forward": 0,
+                "post_award": 231877,
+                "rewards": []
+              }
+            ],
+            [
+              396291915,
+              {
+                "forward": 0,
+                "post_award": 89185,
+                "rewards": []
+              }
+            ],
+            [
+              509652620,
+              {
+                "forward": 0,
+                "post_award": 35673,
+                "rewards": []
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "message": "successful operation"
+}
+```
+
+##### 3.4  Get rating revenue
+
+Request type：GET
+
+Request path：/profits/score
+
+Request parameters：
+
+```
+{Number} account - voter id
+{Number} period - revenue distribution period number
+```
+
+Request example：
+
+    http://localhost:3001/api/v2/profits/score?account=291774116&period=28497
+
+Returned result：
+
+```
+{
+  "code": 0,
+  "data": 237823, // revenue
+  "message": "successful operation"
+}
+```
+
+#### 4. About Advertising
+
+##### 4.1 Publishing an ad slot
+
+Request type：POST
+
+Request path：/advertisings
 
     {Object} cipher - Request object ciphertext object
     
@@ -633,41 +985,59 @@ localhost:3000/api/v2/posts/reward-proxy
       s   - salt hexadecimal
     }
 
-  Request object structure:
+Request object structure:
 
     {Number} platform - platform account
     {String} platform - Ad slot description
     {Number} unit_price - Unit time price
     {Number} unit_time - Unit of time
 
-  Request example: refer to security request verification
+Request example: refer to security request verification
 
 ```
 http://localhost:3001/api/v2/advertising
 ```
 
-  Returned results：
+Returned results：
 
 ```
-{
+{ code: 0,
+  data: {
+    block_num: 2671695, - quoted block number when broadcasting transactions
+    txid: 'eca38133036dfa8a1bbcdfe55b08e01343692f2d', - transaction ID
+    advertising: {
+      platform: 271617537,
+      description: 'VVVVV',
+      unit_price: 100,
+      unit_time: 86400,
+      advertising_aid: 13, - advertising id
+      fee: {
+        "total": {
+          "amount": 0,
+          "asset_id": 0
+        }
+      }
+    }
+  },
+  message: 'successful operation'
 }
 ```
 
-##### 3.2 @TODO Update ad slot
-  Request type：PATCH
+##### 4.2 Updating ad slots
 
-  Request path：/advertising
-  {Object} cipher - Request object ciphertext object
-  
-  {
-    ct, - ciphertext hexadecimal
-    iv, - vector hexadecimal
-    s   - salt hexadecimal
-  }
+Request type：POST
 
-  Request object structure:
+Request path：/advertising/update
+{Object} cipher - Request object ciphertext object
 
+{
+ct, - ciphertext hexadecimal
+iv, - vector hexadecimal
+s   - salt hexadecimal
+}
 
+Request object structure:
+    
     {Number} platform - platform account
     {String} advertising_aid - advertising id
     {String} description - Ad slot description
@@ -675,30 +1045,48 @@ http://localhost:3001/api/v2/advertising
     {Number} unit_time - Unit of time
     {Boolean} on_sell - State of sale
 
-  Request example：
+Request example：
 
-    localhost:3000/api/v2/advertising
+    localhost:3000/api/v2/advertising/update
 
-  Returned result：
+Returned result：
 
 ```
 {
+	code: 0,
+	data: {
+		block_num: 2671971,
+		txid: 'f7e4b1afb19c210035da3e9a71abdf0d0217bac5',
+		advertising: {
+			platform: 271617537,
+			advertising_aid: 3,
+			description: 'CCCCCCC',
+			fee: {
+        "total": {
+          "amount": 0,
+          "asset_id": 0
+        }
+      }
+		}
+	},
+	message: 'successful operation'
 }
 ```
 
-##### 3.3 @TODO Buying an ad slot
-  Request type：POST
+##### 4.3 @TODO Buying an ad slot
 
-  Request path：/advertising/buy
+Request type：POST
+
+Request path：/advertising/buy
   {Object} cipher - Request object ciphertext object
   
-  {
-    ct, - ciphertext hexadecimal
-    iv, - vector hexadecimal
-    s   - salt hexadecimal
-  }
+{
+ct, - ciphertext hexadecimal
+iv, - vector hexadecimal
+s   - salt hexadecimal
+}
 
-  Request object structure:
+Request object structure:
 
     {Number} account - account id or account name
     {Number} platform - platform account
@@ -708,148 +1096,225 @@ http://localhost:3001/api/v2/advertising
     {String} extra_data - extra information
     {String} memo - memo
 
-  Request example：
+Request example：
 
     localhost:3000/api/v2/advertising/buy
 
-  Returned results：
+Returned results：
 
 ```
 {
+  code: 0,
+  data: {
+    block_num: 2672816,
+    txid: 'bf15ce8d17fd411088f31a8c3f15e6f7ca6525c9',
+    advertising: {
+      platform: 271617537,
+      advertising_aid: 3,
+      advertising_order_oid: 3,
+      isconfirm: true,
+      fee: {
+        "total": {
+          "amount": 0,
+          "asset_id": 0
+        }
+      }
+    }
+  },
+  message: '操作成功'
 }
 ```
 
-##### 3.4 @TODO Confirm Ad Order
-  Request type：POST
+##### 4.4 Confirm Ad Slot Order
 
-  Request path：/advertising/confirm
-  {Object} cipher - Request object ciphertext object
-  
-  {
-    ct, - ciphertext hexadecimal
-    iv, - vector hexadecimal
-    s   - salt hexadecimal
-  }
+Request type：POST
 
-  Request object structure:
+Request path：/advertising/confirm
+
+{Object} cipher - Request object ciphertext object
+
+{
+ct, - ciphertext hexadecimal
+iv, - vector hexadecimal
+s   - salt hexadecimal
+}
+
+Request object structure:
 
     {Number} platform - platform account
     {String} advertising_aid - advertising id
     {Number} advertising_order_oid - ad slot order id
     {Boolean} confirm - confirm or reject an ad slot order
 
-  Request example：
+Request example：
 
     localhost:3000/api/v2/advertising/confirm
 
-  Returned result：
+Returned result：
 
 ```
 {
+  code: 0,
+  data: {
+    block_num: 2672816,
+    txid: 'bf15ce8d17fd411088f31a8c3f15e6f7ca6525c9',
+    advertising: {
+      platform: 271617537,
+      advertising_aid: 3,
+      advertising_order_oid: 3,
+      isconfirm: true,
+      fee: {
+        "total": {
+          "amount": 0,
+          "asset_id": 0
+        }
+      }
+    }
+  },
+  message: 'successful operation'
 }
 ```
 
-##### 3.5 @TODO Redeem ad slot order
-  Request type：POST
+##### 4.5 @TODO Redeem ad slot order
 
-  Request path：/advertising/ransom
-  {Object} cipher - Request object ciphertext object
-  
-  {
-    ct, - ciphertext hexadecimal
-    iv, - vector hexadecimal
-    s   - salt hexadecimal
-  }
+Request type：POST
 
-  Request object structure:
+Request path：/advertising/ransom
+{Object} cipher - Request object ciphertext object
+
+{
+ct, - ciphertext hexadecimal
+iv, - vector hexadecimal
+s   - salt hexadecimal
+}
+
+Request object structure:
 
     {Number} from_account - user id or name
     {Number} platform - platform account
     {String} advertising_aid - advertising id
     {Number} advertising_order_oid - ad slot order id 
 
-  Request example：
+Request example：
 
     localhost:3000/api/v2/advertising/ransom
 
-  Returned result：
+Returned result：
 
 ```
 {
 }
 ```
 
-##### 3.6 @TODO Redeem ad slot order
-  Request type：POST
+##### 4.6 Get Platform Advertising List
 
-  Request path：/advertising/ransom
-  {Object} cipher - Request object ciphertext object
-  
-  {
-    ct, - ciphertext hexadecimal
-    iv, - vector hexadecimal
-    s   - salt hexadecimal
-  }
+ Request type：GET
 
-  Request object structure:
+Request path：/advertisings
 
-    {Number} from_account - user id or name
-    {Number} platform - platform account
-    {String} advertising_aid - advertising id
-    {Number} advertising_order_oid - ad slot order id 
-
-  Request example：
-
-    localhost:3000/api/v2/advertising/ransom
-
-  Returned result：
-
-```
-{
-}
-```
-
-##### 3.7 @TODO Query the permissions granted to the platform by the account
-  Request type：GET
-
-  Request path：/advertising
-
-  Request parameters：
+Request object structure:
 
     {Number} platform - platform account
-    {String} lower_bound_advertising - initial advertising id
-    {Number} limit - number of results returned
- 
-  Request example：
+    {Number} lower_bound_advertising - starting ad slot id
+    {Number} limit - length
 
-    localhost:3000/api/v2/advertising?platform=33136&lower_bound_advertising=0.0.0&limit=100
+Request example：
 
-  Returned result：
+    localhost:3000/api/v2/advertisings?platform=xxx&lower_bound_advertising=0&limit=100
+
+Returned result：
 
 ```
 {
+  "code": 0,
+  "data": [{
+    "id": "2.18.0",
+    "advertising_aid": 1,
+    "platform": 271617537,
+    "on_sell": true,
+    "unit_time": 86400,
+    "unit_price": 5000000,
+    "description": "update_first_ad",
+    "last_order_sequence": 2,
+    "publish_time": "2019-10-12T03:52:12",
+    "last_update_time": "2019-10-12T03:53:21"
+  }],
+  "message": "successful operation"
 }
 ```
 
+##### 4.7 Get ad slot order
 
-#### 4. Other transactions
-##### 4.1. Transfer
-  Request type：POST
+Request type：GET
 
-  Request path：/transfer
+Request path：/advertising_orders
 
-  Request parameters：
+Request object structure:
+
+    {Number} filter - 0 means query by buyer id 1 means query by platform and advertisement id
+    {Number} purchaser - buyer id (must pass when filter is 0)
+    {Number} platform - platform account (must pass when filter is 1)
+    {Number} advertising_aid_type - ad slot id (must pass when filter is 1)
+    {Number} lower_bound_advertising_order - Starting ad slot id
+    {Number} limit - length
+
+Request example：
+
+    localhost:3000/api/v2/advertising_orders?filter=0&purchaser=xxx&lower_bound_advertising_order=0&limit=100
+
+    localhost:3000/api/v2/advertising_orders?filter=1&platform=xxx&advertising_aid_type=1&lower_bound_advertiing_order=0&limit=100
+
+Returned result：
 
 ```
- {Object} cipher - The request ciphertext object has the following format
 {
-  ct, - ciphertext hexadecimal
-  iv, - vector hexadecimal
-  s   - salt hexadecimal
+  "code": 0,
+  "data": [{
+    "id": "2.19.0",
+    "advertising_order_oid": 1,
+    "platform": 271617537,
+    "advertising_aid": 1,
+    "user": 291774116,
+    "released_balance": 5000000,
+    "start_time": "2019-10-12T04:21:40",
+    "end_time": "2019-10-13T04:21:40",
+    "buy_request_time": "2019-10-12T04:20:57",
+    "status": "advertising_accepted",
+    "handle_time": "2019-10-12T04:21:36",
+    "memo": {
+      "from": "YYW6x1HQBQEuUB1JXx1X6WstGWgLJu5Krg46SqJguRPpnEMTV39tp",
+      "to": "YYW7Jajj5qMSZVeWj4swUUvgKrU5pkHSg9iCUFCQ4iSDuoE87ucoT",
+      "nonce": "2307413863269517774",
+      "message": "3e81b5ded1220586803423ec546bea13"
+    },
+    "extra_data": "extramessage"
+  }],
+  "message": "successful operation"
+}
+
+```
+
+#### 5. Other transactions
+
+##### 5.1. Transfer
+
+Request type：POST
+
+Request path：/transfer
+
+Request parameters：
+
+```
+{Object} cipher - The request ciphertext object has the following format
+{
+ct, - ciphertext hexadecimal
+iv, - vector hexadecimal
+s   - salt hexadecimal
 }
 ```
 
 Request object structure:
+
 ```
 {Number} uid - specified user id
 {Number} amount - transfer-out amount
@@ -857,13 +1322,14 @@ Request object structure:
 {string} memo - memo
 {Number} time - operation time
 ```
+
 Request example: refer to security request verification
 
 ```
 localhost:3000/api/v2/transfer
 ```
 
- Returned results：
+Returned result：
 
 ```
 {
@@ -876,18 +1342,23 @@ localhost:3000/api/v2/transfer
 }
 ```
 
+#### 6. About Auth
 
-#### 5. Auth related
-##### 5.1. Signature platform sign
-  Request type：GET
+##### 6.1. Signature platform sign
 
-  Request parameter：null
+Request type：GET
 
-  Request example：
+Request parameter：
+
+```
+null
+```
+
+Request example：
 
     localhost:3000/auth/sign
 
-  Returned results：
+Returned result：
 
 ```
 {
@@ -902,20 +1373,21 @@ localhost:3000/api/v2/transfer
 }
 ```
 
-##### 5.2 Signature verification verify
-  Request type：GET
+##### 6.2 Signature verification verify
 
-  Request parameters：
+Request type：GET
+
+Request parameters：
 
     {Number} yoyow - account id
     {Number} time - operation time millisecond value
     {String} sign - signature result
 
-  Request example：
+Request example：
 
     localhost:3000/auth/verify?sign=20724e65c0d763a0cc99436ab79b95c02fbb3f352e3f9f749716b6dac84c1dc27e5e34ff8f0499ba7d94f1d14098c6a60f21f2a24a1597791d8f7dda47559c39a0&time=1517534429858&yoyow=217895094
 
-  Returned results：
+Returned result：
 
     {
       code: operation result,
@@ -926,18 +1398,20 @@ localhost:3000/api/v2/transfer
       }
     }
 
-##### 5.3 Signature Platform Return to QR code signQR
-  Request type：GET
+##### 6.3 Signature Platform Return to QR code signQR
 
-  Request parameters：
+Request type：GET
 
-    {String} state - The extended information will be sent to the platform together with the user signature information when the platform login interface is invoked. It is used when the platform login interface needs a customized parameter. If there is no such requirement, the information may not be transmitted.
+Request parameters:
 
-  Request example：
+    {String} state - The extension information will be sent to the platform together with the user signature information when the platform login interface is invoked. It is used when the platform login interface needs a customized parameter. If there is no such requirement, the information may not be transmitted.
+
+Request example：
 
     localhost:3000/auth/signQR?state=platformCustomParams
 
-  Returned results：
+Returned result：
+
 ```
 {
   code: operation result,
@@ -946,21 +1420,24 @@ localhost:3000/api/v2/transfer
 }
 ```
 
-##### 5.4 Platform Extension Information Protocol Description
+##### 6.4 Platform Extension Information Protocol Description
+
 Platform property extra_data extension information JSON object format string
+
 ```javascript
 {
     "login":"http://example/login" //platform code-scanning login request interface
     "description":"platform description"  //platform description
-    "image":"http://example.image.jpg" //platform profile image, yoyow app 1.1, displayed platform profile image
+    "image":"http://example.image.jpg" //platform profile image，in yoyow app 1.1，displayed platform profile image
     "h5url":"http://exampleH5.com" //platform h5 address, used to jump to h5 page without app jumping
     "packagename":"com.example.app" //platform android jump
     "urlscheme":"example://"  //platform ios jump
 }
 ```
 
-##### 5.5 Platform login by scanning QR code
-App QR code-scanning authorized login will access the platform code-scanning login request interface of the platform extended information, and send back the user signature object.
+##### 6.5 Platform login by scanning QR code
+
+App QR code-scanning authorized login will access the platform code-scanning login request interface of the platform extension information, and send back the user signature object.
 
 ```
 {
@@ -971,10 +1448,11 @@ App QR code-scanning authorized login will access the platform code-scanning log
 }
 ```
 
-The interface provided by the platform must return the following information```
+The interface provided by the platform must return the following information
+
+```
 {
   {Number} code - If operation result is 0, it passed; any non-zero case is treated as an error.
-  
   {String} message - operation result description
 }
 ```
@@ -1010,6 +1488,14 @@ The interface provided by the platform must return the following information```
 
 2006 Invalid asset symbol or id
 
+2008 Invalid memo key
+
+2010 Rating failed
+
+2011 Reposting failed
+
+2012 Rewarding failed
+
 3001 The post ID must be the platform poster's last post ID +1 (platform manages the id)
 ```
 
@@ -1017,39 +1503,40 @@ The interface provided by the platform must return the following information```
 
 In terms of financial security-related operations, such as transfer, posting, and other write operations, its effectiveness will be verified in the middleware service. The information of such requests needs to be converted into ciphertext by encryption and then sent to the middleware service. The encryption method uses symmetric encryption AES, and the key is `secure_key` in the configuration file.
 
-
 Encryption example (crypto-js version of javascript, other languages use similar AES encryption)
 
 The default is mode CBC , padding scheme Pkcs7
 
 For example: transfer operation
+
 ```javascript
-    let key = 'customkey123456'; // This key is the same as the secure_key in the config in the middleware.
+let key = 'customkey123456'; // This key is the same as the secure_key in the config in the middleware.
 
-    let sendObj = {
-      "uid": 9638251,
-      "amount": 100,
-      "memo": "hello yoyow",
-      "time": Date.now()  //time field 
-      The operation time takes the current time millisecond value. Encryption must have this field for verifying the operation time
-    }
+let sendObj = {
+  uid: 9638251,
+  amount: 100,
+  memo: 'hello yoyow',
+  time: Date.now() //time field The operation time takes the current time millisecond value. Encryption must have this field for verifying the operation time
+}
 
-    let cipher = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key);
-    
-    $.ajax({
-      url: 'localhost:3000/api/v2/transfer',
-      type: 'POST',
-      data: {
-        ct: cipher.ciphertext.toString(CryptoJS.enc.Hex),
-        iv: cipher.iv.toString(),
-        s: cipher.salt.toString()
-      },
-      success: function(res){
-        // do something ...
-      }
-    })
+let cipher = CryptoJS.AES.encrypt(JSON.stringify(sendObj), key)
+
+$.ajax({
+  url: 'localhost:3000/api/v2/transfer',
+  type: 'POST',
+  data: {
+    ct: cipher.ciphertext.toString(CryptoJS.enc.Hex),
+    iv: cipher.iv.toString(),
+    s: cipher.salt.toString()
+  },
+  success: function(res) {
+    // do something ...
+  }
+})
 ```
+
 PHP encryption
+
 ```php
     function cryptoJsAesEncrypt($passphrase, $value){
       $salt = openssl_random_pseudo_bytes(8);
@@ -1067,6 +1554,4 @@ PHP encryption
     }
 ```
 
-
 Other operations that require secure request verification change sendObj according to the documentation
-
