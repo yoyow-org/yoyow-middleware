@@ -41,9 +41,8 @@ module.exports = {
     // poster
     // pid
     // from_account
-    req.body.platform = req.params.platform || config.platform_id
-
-    Api.getPostScore(req.body)
+    req.query.platform = req.query.platform || config.platform_id
+    Api.getPostScore(req.query)
       .then(result => {
         utils.success(res, result)
       })
@@ -59,8 +58,8 @@ module.exports = {
     // lower_bound_score
     // limit
     // list_cur_period
-    req.query.platform = req.params.platform || config.platform_id
-    // console.log(req.query)
+    req.query.platform = req.query.platform || config.platform_id
+    
 
     Api.listPostScores(req.query)
       .then(result => {

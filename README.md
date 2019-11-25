@@ -324,8 +324,6 @@ http://localhost:3001/api/v2/blocks/100/confirmed
     }
 ```
 
-####
-
 #### 2. 文章相关接口
 
 ##### 2.1. 查询文章

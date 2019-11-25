@@ -18,5 +18,7 @@ module.exports = {
   // 转账是否转到余额 否则转到零钱
   to_balance: false,
   // 钱包授权页URL
-  wallet_url: 'http://demo.yoyow.org:8000/#/authorize-service'
+  wallet_url: 'http://demo.yoyow.org:8000/#/authorize-service',
+  // 浏览器api
+  explorer_url: 'https://testnet.explorer.yoyow.org/api/v1'
 }
