@@ -65,5 +65,9 @@ router
   .get('/post_histories', explorer.get_post_histories)
   // 查询历史打分
   .get('/score_histories', explorer.get_score_histories)
+  // 创建许可
+  .post('/create_license',
+    Secure.validQueue,
+    Account.create_license)
 
 module.exports = router
