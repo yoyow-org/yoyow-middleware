@@ -389,7 +389,60 @@ localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313
 }
 ```
 
-##### 2.2. 简单的发文章接口
+##### 2.2. 创建许可
+
+该接口为创建许可，发文章必须要指定许可
+
+请求类型：POST
+
+请求路径：/create_license
+
+    {Object} cipher - 请求对象密文对象
+
+    {
+      ct, - 密文文本 16进制
+      iv, - 向量 16进制
+      s   - salt 16进制
+    }
+
+请求对象结构:
+
+    {Number} type - 许可类型
+    {String} hash_value - 许可hash
+    {String} title - 许可标题
+    {String} body - 许可内容
+    {String} extra_data - 附加信息
+    {Number} time - 操作时间
+
+请求示例：参照 安全请求验证
+
+```
+http://localhost:3001/api/v2/create_license
+```
+
+返回结果：
+
+```
+{
+  code: 0,
+  data: {
+    block_num: 1783490,
+    txid: '6093338f2f3e736049e48a71de9120e23f028fab',
+    license: {
+      platform: '460444828',
+      type: 0,
+      hash_value: 'hash',
+      title: 'title',
+      body: 'body',
+      extra_data: 'extra_data',
+      license_lid: 6,
+      fee: [Object]
+    }  },
+  message: '操作成功'
+}
+```
+
+##### 2.3. 简单的发文章接口
 
 该接口为精简接口，可以满足简单的发文需求
 只支持发原创文章，文章 post_type 为 0
@@ -456,7 +509,7 @@ http://localhost:3001/api/v2/posts/simple
 }
 ```
 
-##### 2.3. 发文章
+##### 2.4. 发文章
 
 请求类型：POST
 
@@ -557,7 +610,7 @@ http://localhost:3001/api/v2/posts
 }
 ```
 
-##### 2.4. 为文章打分
+##### 2.5. 为文章打分
 
 平台可以使用授权账户的权限，代理账户为文章打分。
 
@@ -609,7 +662,7 @@ localhost:3000/api/v2/posts/score
 
 ```
 
-##### 2.5. 为文章打赏
+##### 2.6. 为文章打赏
 
 平台可以代理普通账户打赏其他文章。
 
@@ -662,7 +715,7 @@ localhost:3000/api/v2/posts/reward-proxy
 }
 ```
 
-##### 2.6. 获取文章列表
+##### 2.7. 获取文章列表
 
 请求类型：GET
 
@@ -691,7 +744,7 @@ localhost:3000/api/v2/posts/reward-proxy
 }
 ```
 
-##### 2.7 获取某文章的打分列表
+##### 2.8 获取某文章的打分列表
 
 请求类型：GET
 
