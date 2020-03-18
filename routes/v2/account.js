@@ -37,7 +37,7 @@ module.exports = {
     })
   },
 
-  create_license: (req, res) => {
+  create_license: async (req, res) => {
     let dataBody = req.decryptedData
     try {
       let apiRes = await Api.createLicense(dataBody)
@@ -47,7 +47,7 @@ module.exports = {
       utils.success(res, apiRes)
       // res.json
     } catch (e) {
-      utils.error(res, errorUtils.formatError(e))
+      utils.error(res, e)
     }
   }
 };
