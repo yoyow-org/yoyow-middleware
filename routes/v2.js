@@ -10,8 +10,9 @@ const Profit = require('./v2/profit')
 const Transfer = require('./v2/transfer')
 // ad module
 const Advertisement = require('./v2/advertisement')
-
 import Secure from '../lib/Secure'
+// 浏览器
+import explorer from './v2/explorer'
 
 router
   .post('/proxy', Proxy.proxy)
@@ -58,5 +59,15 @@ router
   .get('/profits/poster', Profit.by_poster)
   .get('/profits/platform', Profit.by_platform)
   .get('/profits/score', Profit.by_score)
+  // 获取文章打分
+  .get('/posts/score', Post.get_score)
+  // 查询历史内容
+  .get('/post_histories', explorer.get_post_histories)
+  // 查询历史打分
+  .get('/score_histories', explorer.get_score_histories)
+  // 创建许可
+  .post('/create_license',
+    Secure.validQueue,
+    Account.create_license)
 
 module.exports = router
