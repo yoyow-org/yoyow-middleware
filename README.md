@@ -44,6 +44,11 @@ YOYOW 中间件是通过 YOYOW node 的 API 接口与 YOYOW 网络通讯，为�
 
     // 钱包授权页URL，测试网地址如下，正式网地址“https://wallet.yoyow.org/#/authorize-service”
     wallet_url: "http://demo.yoyow.org:8000/#/authorize-service"
+
+    // 安全等级 
+    // simple: 可以兼容旧的版本。 
+    // standard: AES-256-CBC 加密模式，Pkcs7填充算法。使用PBKDF2派生密钥，循环100次 
+    security_level: 'simple'
 }
 ```
 
@@ -391,7 +396,9 @@ localhost:3000/api/v2/posts?poster=30833&post_pid=2&platform=33313
 
 ##### 2.2. 创建许可
 
-该接口为创建许可，发文章必须要指定许可
+该接口为创建许可，发文章时必须指定文章使用许可的id。该接口需要配置平台的 active key。
+
+许可也可以在yoyow_client中使用create_license命令提前创建。
 
 请求类型：POST
 
@@ -1566,10 +1573,15 @@ App 扫码授权登录将访问 平台拓展信息的 平台扫码登录请求�
 
 涉及到资金安全相关的操作，比如转账，发文等各种写操作，会在中间件服务中验证其有效性。这类请求的信息需要先通过加密操作转换成密文，再发送给中间件服务。加密方式采用对称加密 AES，密钥为配置文件中的`secure_key`。
 
+加密等级可以在配置文件中修改 security_level 参数来指定。
+
+默认 为simple 模式。 即crypto-js 默认的AES 加密算法。
+
+建议采用 standard 模式:AES-256-CBC 加密模式，Pkcs7填充算法。使用PBKDF2循环100次派生出密钥。
+
 加密示例(javascript 的 crypto-js 版，其他语言使用类似的 AES 加密方式)
 
-默认 mode CBC , padding scheme Pkcs7
-
+示例
 例如：transfer 操作
 
 ```javascript
