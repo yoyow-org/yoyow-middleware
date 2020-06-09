@@ -8,7 +8,7 @@ module.exports = {
   // 平台所有者active私钥
   active_key: '5KGTSsNLU1cb5Sr62xDgXu6KRpi3Z5RHxSFVBQsmvRt6p19xuiF',
   // 平台所有者零钱私钥
-  secondary_key: '5J4xywHPn2yPW7a8eV6Ff1ZRm5zsEav2EAiSTJu4huEGxWDVfb2', // platform1
+  secondary_key: '5HwW9wcebsDfRNiPrDBshDZi7PREaLHV8A9FKnTh5H87ZW7i5C9', // platform1
   // 平台所有者备注私钥
   memo_key: '5K8zY2ZpFtHC8STGbMFLUe33oJnsPe7LxYgt1qkDMZFebetF8CQ',
   // 平台id(yoyow id)
