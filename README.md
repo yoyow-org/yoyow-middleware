@@ -329,6 +329,190 @@ http://localhost:3001/api/v2/blocks/100/confirmed
     }
 ```
 
+
+##### 1.7. 锁仓 
+
+请求类型：POST
+
+请求路径：/lock_balance
+
+    {Object} cipher - 请求对象密文对象
+
+    {
+      ct, - 密文文本 16进制
+      iv, - 向量 16进制
+      s   - salt 16进制
+    }
+
+请求对象结构:
+
+    {Number} uid - 锁仓账号
+    {Number} amount - 锁仓金额
+
+请求示例：参照 安全请求验证
+
+```
+http://localhost:3001/api/v2/lock_balance
+```
+
+返回结果：
+
+```
+{
+  code: 0,
+  data: {
+    block_num: 4179217,
+    txid: '8fe7ba932b7875f58ebe97a590163e9fdd499d89',
+    post: { account: 460444828, new_lock_balance: 100, fee: [Object] }
+  },
+  message: '操作成功'
+}
+```
+
+##### 1.8. 领取积分 
+
+请求类型：POST
+
+请求路径：/collect_csaf
+
+    {Object} cipher - 请求对象密文对象
+
+    {
+      ct, - 密文文本 16进制
+      iv, - 向量 16进制
+      s   - salt 16进制
+    }
+
+请求对象结构:
+
+    {Number} from - 积分领取人id
+    {Number} to - 积分接收人 id
+    {Number} amount - 积分数量 （不含精度）
+
+请求示例：参照 安全请求验证
+
+```
+http://localhost:3001/api/v2/collect_csaf
+```
+
+返回结果：
+
+```
+{
+  code: 0,
+  data: {
+    block_num: 4179236,
+    txid: '6de2e3532998576a6ad93374f74a7306d42d116d',
+    post: {
+      from: 460444828,
+      to: 318865995,
+      amount: [Object],
+      time: 1591695000,
+      fee: [Object]
+    }
+  },
+  message: '操作成功'
+}
+```
+
+##### 1.9. 受益人代领取积分收益 
+
+请求类型：POST
+
+请求路径：/collect_benefit_csaf
+
+    {Object} cipher - 请求对象密文对象
+
+    {
+      ct, - 密文文本 16进制
+      iv, - 向量 16进制
+      s   - salt 16进制
+    }
+
+请求对象结构:
+
+   {Number} issuer - 受益人账号 
+   {Number} from - 积分生产人账号id
+   {Number} to - 积分接受人账号id
+   {Number} amount - 积分数量（不包含精度）
+
+请求示例：参照 安全请求验证
+
+```
+http://localhost:3001/api/v2/collect_benefit_csaf
+```
+
+返回结果：
+
+```
+{
+  code: 0,
+  data: {
+    block_num: 4178047,
+    txid: 'e5ba08ee19a97fbd02869e99215999eb03de22f4',
+    post: {
+      issuer: 460444828,
+      from: 318865995,
+      to: 460444828,
+      amount: [Object],
+      benefit_type: 0,
+      time: 1591691460,
+      fee: [Object]
+    }
+  },
+  message: '操作成功'
+}
+```
+
+##### 1.10. 受益人代领取节点出块收益
+
+受益人将见证人的出块收益（出块工资）,领取到受益人账户的余额。
+
+请求类型：POST
+
+请求路径：/collect_benefit_witness_wages
+
+    {Object} cipher - 请求对象密文对象
+
+    {
+      ct, - 密文文本 16进制
+      iv, - 向量 16进制
+      s   - salt 16进制
+    }
+
+请求对象结构:
+
+    {Number} issuer - 受益人账号id
+    {Number} from - 见证人账号 id
+    {Number} amount - 领取数量（不包含精度）
+
+请求示例：参照 安全请求验证
+
+```
+http://localhost:3001/api/v2/collect_benefit_witness_wages
+```
+
+返回结果：
+
+```
+{
+  code: 0,
+  data: {
+    block_num: 4178278,
+    txid: '0e52216663693ec7d9441a07ebb54cb6f56962a1',
+    post: {
+      issuer: 460444828,
+      from: 475575252,
+      amount: [Object],
+      benefit_type: 1,
+      fee: [Object]
+    }
+  },
+  message: '操作成功'
+}
+```
+
+
 #### 2. 文章相关接口
 
 ##### 2.1. 查询文章

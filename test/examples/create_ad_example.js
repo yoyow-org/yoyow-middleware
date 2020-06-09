@@ -4,7 +4,7 @@ const request = require('request')
 let key = 'thisissec'
 
 let sendObj = {
-  platform: 271617537,
+  platform: 460444828,
   description: 'VVVVV',
   unit_price: 100,
   unit_time: 86400,

@@ -49,5 +49,66 @@ module.exports = {
     } catch (e) {
       utils.error(res, e)
     }
-  }
+  },
+
+  lock_balance: async (req, res) => {
+    let dataBody = req.decryptedData
+    console.log(dataBody)
+    try {
+      let apiRes = await Api.lockBalance(dataBody)
+      if (apiRes.code) {
+        throw apiRes
+      }
+      utils.success(res, apiRes)
+      // res.json
+    } catch (e) {
+      utils.error(res, e)
+    }
+  },
+
+  collect_csaf: async (req, res) => {
+    let dataBody = req.decryptedData
+    console.log(dataBody)
+    try {
+      let apiRes = await Api.collectCsaf(dataBody)
+      if (apiRes.code) {
+        throw apiRes
+      }
+      utils.success(res, apiRes)
+      // res.json
+    } catch (e) {
+      utils.error(res, e)
+    }
+  },
+
+  collect_benefit_csaf: async (req, res) => {
+    let dataBody = req.decryptedData
+    console.log(dataBody)
+    try {
+      let apiRes = await Api.collectBenefitCsaf(dataBody)
+      if (apiRes.code) {
+        throw apiRes
+      }
+      utils.success(res, apiRes)
+      // res.json
+    } catch (e) {
+      utils.error(res, e)
+    }
+  },
+
+  collect_benefit_witness_wages: async (req, res) => {
+    let dataBody = req.decryptedData
+    console.log(dataBody)
+    try {
+      let apiRes = await Api.collectBenefitWitnessWages(dataBody)
+      if (apiRes.code) {
+        throw apiRes
+      }
+      utils.success(res, apiRes)
+      // res.json
+    } catch (e) {
+      utils.error(res, e)
+    }
+  },
+
 };

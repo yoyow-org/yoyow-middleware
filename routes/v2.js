@@ -20,6 +20,14 @@ router
   .get('/accounts/:uid', Account.get_by_uid)
   .get('/accounts/:uid/histories', Account.histories)
 
+  .post('/lock_balance', Secure.validQueue, Account.lock_balance)
+  .post('/collect_csaf', Secure.validQueue, Account.collect_csaf)
+
+  .post('/collect_benefit_csaf', Secure.validQueue, Account.collect_benefit_csaf)
+  .post('/collect_benefit_witness_wages', Secure.validQueue, Account.collect_benefit_witness_wages)
+
+
+
   .get('/authPermissions', Account.get_auth_permissions)
 
   .get('/assets/:asset_name', Asset.get_by_name)
