@@ -149,11 +149,12 @@ module.exports = {
       })
   },
 
+  // yoyow 2.1 版本后，接口有调整。需要传入lower_bound， lower_bound默认为1.8.0 ,为逆序查询最新的1.7.x 。 若用户指定1.7.x 即查询1.7.x之前的符合条件文章
   list: (req, res) => {
-    let { platform, poster, start_time, limit } = req.query
+    let { platform, poster, lower_bound="1.8.0", limit } = req.query
     // let platform = config.platform_id;
 
-    Api.getPostList(platform, poster, limit, start_time)
+    Api.getPostList(platform, poster, lower_bound, limit)
       .then(tx => {
         utils.success(res, tx)
       })

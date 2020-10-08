@@ -918,12 +918,12 @@ localhost:3000/api/v2/posts/reward-proxy
 {Number} platform - 平台账号
 {Number} poster -发文者账号（默认null，为null时查询该平台所有文章）
 {Number} limit - 加载数（默认20）
-{String} start - 开始时间 'yyyy-MM-ddThh:mm:ss' ISOString （加载下一页时将当前加载出的数据的最后一条的create_time传入，不传则为从头加载）
+{String} lower_bound - yoyow 2.1 版本后，接口有调整。需要传入lower_bound，返回该oid lower_bound默认为 "1.8.0" ,为逆序查询最新的1.7.x 。 若用户指定1.7.x 即查询1.7.x之前的符合条件文章。如需连续查询，可使用response中最新文章的id，作为下次查询的lower_bound
 ```
 
 请求示例：
 
-    http://localhost:3001/api/v2/posts/getPostList?start=2019-07-11T07:04:37&limit=2&poster=30834
+    http://localhost:3001/api/v2/posts/getPostList?limit=20&platform=375867735&poster=391143965&lower_bound=1.7.75892
 
 返回结果：
 
@@ -931,7 +931,7 @@ localhost:3000/api/v2/posts/reward-proxy
 {
   code: 操作结果,
   message: 返回消息,
-  data: [文章对象（参考获取单个文章返回的数据结构）]
+  data: [文章对象（参考获取单个文章返回的数据结构）] 
 }
 ```
 
